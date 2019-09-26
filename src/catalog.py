@@ -6,10 +6,11 @@ from Messier33.src.source import Source
 
 class Catalog(object):
     def __init__(self, catalog="null", size=0):
-        self.sources=[Source]*size
-        #self.sources=np.array([Source]*size, dtype=Source)
-        self.catalog=catalog
+        #self.sources=[Source]*size
+        #self.sources=np.array([Source()]*size)#, dtype=Source)
+        self.sources = [Source()]*size
 
+        self.catalog=catalog
 
     @classmethod
     def from_pandas(cls, filename="%s/pandas_m33_2009.unique"%DATA):
@@ -22,8 +23,10 @@ class Catalog(object):
                 _skycoord=None
                 _bandDATA=cls.line_to_bandINFO(line[24:55], band='g')
                 _bandDATA.update(cls.line_to_bandINFO(line[55:86], band='i'))
-                cls.sources[i]=cls.sources[i](skycoord=_skycoord, bandDATA=_bandDATA)
-                if(i%1000==0): print("%d/%d"%(i,_size)) 
+                #cls.sources[i]=cls.sources[i](skycoord=_skycoord, bandDATA=_bandDATA)
+                cls.sources[i]=Source(skycoord=_skycoord, bandDATA=_bandDATA)
+                if(i%1000==0): print("%f"%(float(i)/_size)) 
+        cls.sources = np.array(cls.sources)
         return cls
 
     @classmethod
@@ -40,9 +43,14 @@ class Catalog(object):
 
     @staticmethod
     def line_to_bandINFO(rawline, band="?"):
+        """
         bandINFO={  "%s"%band:   float(rawline[14:21]),
                     "%serr"%band:float(rawline[21:28]),
                     "%scls"%band:float(rawline[28:])}
+        """
+        bandINFO={  globals()["%s"%band]:   float(rawline[14:21]),
+                    globals()["d%s"%band]:  float(rawline[21:28]),
+                    globals()["%scls"%band]:float(rawline[28:])}
         return(bandINFO)
 
     @staticmethod
@@ -65,7 +73,10 @@ if __name__=="__main__":
     #c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
     #c.serialise()
     #c=Catalog.from_serialised()
-    print(c.sources[0][g])
+    print(c.sources)
+    print(np.shape(c.sources))
+    print(c.sources[:2][g])
+    #print(c.sources[:,0])
 
 
 
