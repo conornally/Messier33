@@ -1,6 +1,6 @@
 from Messier33.include.m33 import *
-class Source:
-    def __init__(self, skycoord=SkyCoord, bandDATA={}):
+class Source(object):
+    def __init__(self, skycoord=None, bandDATA={}):
         self.skycoord=skycoord
         self.bandDATA=bandDATA
         self.len=len(self.bandDATA.keys())
@@ -10,6 +10,9 @@ class Source:
 
     def __len__(self):
         return(self.len)
+
+    def __repr__(self):
+        return("%s"%self.bandDATA)
 
 if __name__=="__main__":
     x=  Source()
