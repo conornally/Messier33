@@ -1,3 +1,4 @@
+import pickle
 from Messier33.include.m33 import *
 class Source(object):
     def __init__(self, skycoord=None, bandDATA={}, size=6):
@@ -13,8 +14,9 @@ class Source(object):
     def __len__(self):
         return(6)
 
-    def __repr__(self):
-        return("%s"%self.bandDATA)
+    @property
+    def serial(self):
+        return(pickle.dumps(self))
 
 if __name__=="__main__":
     x=  Source()

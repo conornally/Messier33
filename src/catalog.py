@@ -15,6 +15,7 @@ class Catalog(object):
         self.sources = [Source()]*size
 
         self.catalog=catalog
+        self.size=size
 
     @classmethod
     def from_pandas(cls, filename="%s/pandas_m33_2009.unique"%DATA):
@@ -48,7 +49,7 @@ class Catalog(object):
 
 
     @classmethod
-    def from_serialised(cls, filename="%s/out/tmp.npy"%ROOT):
+    def xfrom_serialised(cls, filename="%s/out/tmp.npy"%ROOT):
         with open(filename,'rb') as serial_in:
             #cls=json.load(serial_in, object_hook=dict_to_obj)
             #cls=pickle.load(serial_in)
@@ -75,13 +76,60 @@ class Catalog(object):
             for i,l in enumerate(f): pass
         return i+1
     
-    def serialise(self):
+    def xserialise(self):
         #temporary till i do filename
         filename="%s/out/tmp.npy"%ROOT
         with open(filename,'wb') as serial_out:
             #json.dump(self, serial_out, default=convert_to_dict)
             #pickle.dump(self,serial_out, protocol=0)#, default=convert_to_dict))
             np.save(filename, self)
+
+    def serialise(self):
+        with open("%s/tmp.serial"%OUT, "wb") as serial_out:
+
+            sources = self.__dict__.pop("sources")
+            serial_out.write(pickle.dumps(self.__dict__))
+            serial_out.write(b"\nHEADER_END\n")
+            for i,s in enumerate(sources):
+                serial_out.write(s.serial)
+                serial_out.write(b"\nDELIMETER\n")
+                if(i%1000==0):print(i)
+            serial_out.write(b"END\n")
+
+    @classmethod
+    def from_serialised(cls):
+        with open("%s/tmp.serial"%OUT, "rb") as serial_in:
+            stream=b""
+            line=b""
+            while(line!=b"HEADER_END\n"):
+            #   for i in range(3):
+                stream+=line
+                line=serial_in.readline()
+            cls=cls.from_dict(pickle.loads(stream))
+            
+            flag=True
+            i=0
+            while(flag):
+                stream=b""
+                line=b""
+                while(line!=b"DELIMETER\n" and line!=b"END\n"):
+                    stream+=line
+                    line=serial_in.readline()
+                    if(line==b"END\n"): flag=False
+                if(flag):
+                    cls.sources[i] = pickle.loads(stream)
+                    i+=1
+                    if(i%1000==0):print(i)
+        return cls
+
+
+    @classmethod
+    def from_dict(cls, param_dict):
+        cls=cls(size=param_dict["size"],
+                catalog=param_dict["catalog"])
+        return cls
+
+
 
     @property
     def g(self): #not ideal but ok for now
@@ -95,9 +143,11 @@ if __name__=="__main__":
     #c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
     #c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
     c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
+    #c.serialise()
+    #c=Catalog.from_serialised()
     c.serialise()
-    print("dumpes")
-    c=Catalog.from_serialised()
+    print("dump")
+    c = c.from_serialised()
     print(c.g)
 
 
