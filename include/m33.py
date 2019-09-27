@@ -4,6 +4,9 @@ from astropy.coordinates import SkyCoord
 
 gx,gy,g,dg,gcls=np.arange(5)+0
 ix,iy,i,di,icls=np.arange(5)+5
+Jx,Jy,J,dJ,Jcls=np.arange(5)+10
+Kx,Ky,K,dK,Kcls=np.arange(5)+15
+Hx,Hy,H,dH,Hcls=np.arange(5)+20
 
 def convert_to_dict(obj):
     obj_dict={  "__class__":obj.__class__.__name__,

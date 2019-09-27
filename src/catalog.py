@@ -1,5 +1,9 @@
 import pickle,json
 
+from matplotlib import use
+use("Agg")
+import matplotlib.pyplot as plt
+
 from Messier33.include.m33 import *
 from Messier33.include.config import *
 from Messier33.src.source import Source
@@ -19,20 +23,35 @@ class Catalog(object):
         bandINFO_step=31
         with open(filename, 'r') as raw:
             for i,line in enumerate(raw.readlines()[:]):
-                #_skycoord=cls.line_to_skycoord(line[:24].split())
-                _skycoord=None
+                _skycoord=cls.line_to_skycoord(line[:24].split())
+                #_skycoord=None
                 _bandDATA=cls.line_to_bandINFO(line[24:55], band='g')
                 _bandDATA.update(cls.line_to_bandINFO(line[55:86], band='i'))
                 #cls.sources[i]=cls.sources[i](skycoord=_skycoord, bandDATA=_bandDATA)
                 cls.sources[i]=Source(skycoord=_skycoord, bandDATA=_bandDATA)
                 if(i%1000==0): print("%f"%(float(i)/_size)) 
-        cls.sources = np.array(cls.sources)
+        #cls.sources = np.array(cls.sources)
         return cls
 
     @classmethod
-    def from_serialised(cls, filename="%s/out/tmp.json"%ROOT):
-        with open(filename,'r') as serial_in:
-            cls=json.load(serial_in, object_hook=dict_to_obj)
+    def from_wfcam(cls, filename="%s/wfcam_m33_lot.unique"%DATA):
+        _size=cls.filelength(filename)
+        cls=cls(catalog="wfcam", size=_size)
+        with open(filename, 'r') as raw:
+            for i,line in enumerate(raw.readlines()[:]):
+                _skycoord=cls.line_to_skycoord(line[:27].split())
+                _bandDATA=cls.line_to_bandINFO(line[30:61], band='J')
+                _bandDATA.update(cls.line_to_bandINFO(line[61:92], band='K'))
+                _bandDATA.update(cls.line_to_bandINFO(line[92:123],band='H'))
+                cls.sources[i]=Source(skycoord=_skycoord, bandDATA=_bandDATA)
+        return cls
+
+
+    @classmethod
+    def from_serialised(cls, filename="%s/out/tmp.pickle"%ROOT):
+        with open(filename,'rb') as serial_in:
+            #cls=json.load(serial_in, object_hook=dict_to_obj)
+            cls=pickle.load(serial_in)
         return(cls)
 
     @staticmethod
@@ -43,11 +62,7 @@ class Catalog(object):
 
     @staticmethod
     def line_to_bandINFO(rawline, band="?"):
-        """
-        bandINFO={  "%s"%band:   float(rawline[14:21]),
-                    "%serr"%band:float(rawline[21:28]),
-                    "%scls"%band:float(rawline[28:])}
-        """
+        #print(rawline[14:21], rawline[21:28], rawline[28:])
         bandINFO={  globals()["%s"%band]:   float(rawline[14:21]),
                     globals()["d%s"%band]:  float(rawline[21:28]),
                     globals()["%scls"%band]:float(rawline[28:])}
@@ -59,24 +74,28 @@ class Catalog(object):
             for i,l in enumerate(f): pass
         return i+1
     
-
     def serialise(self):
         #temporary till i do filename
-        filename="%s/out/tmp.json"%ROOT
-        with open(filename,'w') as serial_out:
-            json.dump(self, serial_out, default=convert_to_dict)
-        print("dumped")
+        filename="%s/out/tmp.pickle"%ROOT
+        with open(filename,'wb') as serial_out:
+            #json.dump(self, serial_out, default=convert_to_dict)
+            pickle.dump(self,serial_out, protocol=0)#, default=convert_to_dict))
 
+    @property
+    def g(self): #not ideal but ok for now
+        return(s[g] for s in self.sources)
+    @property
+    def i(self): #not ideal but ok for now
+        return(s[i] for s in self.sources)
+    
 if __name__=="__main__":
     import time
-    c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
+    #c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
+    c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
+    print(c.sources)
     #c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
     #c.serialise()
     #c=Catalog.from_serialised()
-    print(c.sources)
-    print(np.shape(c.sources))
-    print(c.sources[:2][g])
-    #print(c.sources[:,0])
 
 
 
