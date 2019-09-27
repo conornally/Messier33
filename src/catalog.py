@@ -23,8 +23,8 @@ class Catalog(object):
         bandINFO_step=31
         with open(filename, 'r') as raw:
             for i,line in enumerate(raw.readlines()[:]):
-                _skycoord=cls.line_to_skycoord(line[:24].split())
-                #_skycoord=None
+                #_skycoord=cls.line_to_skycoord(line[:24].split())
+                _skycoord=None
                 _bandDATA=cls.line_to_bandINFO(line[24:55], band='g')
                 _bandDATA.update(cls.line_to_bandINFO(line[55:86], band='i'))
                 #cls.sources[i]=cls.sources[i](skycoord=_skycoord, bandDATA=_bandDATA)
@@ -48,10 +48,11 @@ class Catalog(object):
 
 
     @classmethod
-    def from_serialised(cls, filename="%s/out/tmp.pickle"%ROOT):
+    def from_serialised(cls, filename="%s/out/tmp.npy"%ROOT):
         with open(filename,'rb') as serial_in:
             #cls=json.load(serial_in, object_hook=dict_to_obj)
-            cls=pickle.load(serial_in)
+            #cls=pickle.load(serial_in)
+            cls=np.load(filename, allow_pickle=True)
         return(cls)
 
     @staticmethod
@@ -76,10 +77,11 @@ class Catalog(object):
     
     def serialise(self):
         #temporary till i do filename
-        filename="%s/out/tmp.pickle"%ROOT
+        filename="%s/out/tmp.npy"%ROOT
         with open(filename,'wb') as serial_out:
             #json.dump(self, serial_out, default=convert_to_dict)
-            pickle.dump(self,serial_out, protocol=0)#, default=convert_to_dict))
+            #pickle.dump(self,serial_out, protocol=0)#, default=convert_to_dict))
+            np.save(filename, self)
 
     @property
     def g(self): #not ideal but ok for now
@@ -91,11 +93,12 @@ class Catalog(object):
 if __name__=="__main__":
     import time
     #c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
-    c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
-    print(c.sources)
-    #c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
-    #c.serialise()
-    #c=Catalog.from_serialised()
+    #c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
+    c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
+    c.serialise()
+    print("dumpes")
+    c=Catalog.from_serialised()
+    print(c.g)
 
 
 
