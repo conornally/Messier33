@@ -25,8 +25,13 @@ class Catalog(object):
         bandINFO_step=31
         with open(filename, 'r') as raw:
             for i,line in enumerate(raw.readlines()[:]):
-                _skycoord=cls.line_to_skycoord(line[:24].split())
-                #_skycoord=None
+                splitline=cls.split_pandas_line(line, float)
+                ra = cls.hms_to_degrees(*splitline[:3])
+                dec= cls.dms_to_degrees(*splitline[3:6])
+                #_skycoord=cls.line_to_skycoord(line[:24].split())
+                _skycoord=(ra,dec)
+                
+
                 _bandDATA=cls.line_to_bandINFO(line[24:55], band='g')
                 _bandDATA.update(cls.line_to_bandINFO(line[55:86], band='i'))
                 #cls.sources[i]=cls.sources[i](skycoord=_skycoord, bandDATA=_bandDATA)
@@ -146,6 +151,14 @@ class Catalog(object):
                 catalog=param_dict["catalog"])
         return cls
 
+    @staticmethod
+    def dms_to_degrees(d,m,s):
+        return(d+(m/60.0)+(s/3600.0))
+
+    @staticmethod
+    def hms_to_degrees(h,m,s):
+        return((h*15.0)+(m/4.0)+(s/240.0))
+
     @property
     def g(self): #not ideal but ok for now
         return(s[g] for s in self.sources)
@@ -154,8 +167,10 @@ class Catalog(object):
         return(s[i] for s in self.sources)
     
 if __name__=="__main__":
-    #c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
-    c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%DATA)
+    c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
+    #c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%DATA)
+    print(c.dms_to_degrees(30,15,50))
+    print(c.hms_to_degrees(3,15,50))
     #c=Catalog.from_pandas_to_array(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
     #c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
     #c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)

@@ -1,7 +1,7 @@
 import pickle
 from Messier33.include.m33 import *
 class Source(object):
-    def __init__(self, skycoord=None, bandDATA={}, size=6):
+    def __init__(self, skycoord=(0,0), bandDATA={}, size=6):
         self.skycoord=skycoord
         self.bandDATA=bandDATA
         self.len=size
