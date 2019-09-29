@@ -13,6 +13,7 @@ class Catalog(object):
         #self.sources=[Source]*size
         #self.sources=np.array([Source()]*size)#, dtype=Source)
         self.sources = [Source()]*size
+        self.sources_array=None
 
         self.catalog=catalog
         self.size=size
@@ -24,8 +25,8 @@ class Catalog(object):
         bandINFO_step=31
         with open(filename, 'r') as raw:
             for i,line in enumerate(raw.readlines()[:]):
-                #_skycoord=cls.line_to_skycoord(line[:24].split())
-                _skycoord=None
+                _skycoord=cls.line_to_skycoord(line[:24].split())
+                #_skycoord=None
                 _bandDATA=cls.line_to_bandINFO(line[24:55], band='g')
                 _bandDATA.update(cls.line_to_bandINFO(line[55:86], band='i'))
                 #cls.sources[i]=cls.sources[i](skycoord=_skycoord, bandDATA=_bandDATA)
@@ -47,6 +48,24 @@ class Catalog(object):
                 cls.sources[i]=Source(skycoord=_skycoord, bandDATA=_bandDATA)
         return cls
 
+    @classmethod
+    def from_pandas_to_array(cls, filename="%s/pandas_m33_2009.unique"%DATA):
+        _size=cls.filelength(filename)
+        cls=cls(catalog="pandas", size=_size)
+        cls.sources_array=np.zeros((_size,18))
+        with open(filename, 'r') as file_in:
+            for i,line in enumerate(file_in.readlines()):
+                cls.sources_array[i] = cls.split_pandas_line(line)#, dtype=float)) #float automatic
+        return cls
+
+    @staticmethod
+    def split_pandas_line(line, dtype=str):
+        splitlist =[line[:3], line[3:6], line[6:12], 
+                    line[12:16], line[16:19], line[19:24], 
+                    line[24:31], line[31:38], line[38:45], line[45:52], line[52:55], 
+                    line[55:62], line[62:69], line[69:76], line[76:83], line[83:86], 
+                    line[86:89], line[89:93]]
+        return(list(dtype(x) for x in splitlist))
 
     @classmethod
     def xfrom_serialised(cls, filename="%s/out/tmp.npy"%ROOT):
@@ -57,14 +76,13 @@ class Catalog(object):
         return(cls)
 
     @staticmethod
-    def line_to_skycoord(rawline): #this is very slow
+    def line_to_skycoord(rawline): #this is very slow and SUPER memory intensive, i think ill convert to just float(degrees)
         ra="%s:%s:%s"%(rawline[0], rawline[1], rawline[2])
         dec="%s:%s:%s"%(rawline[3], rawline[4], rawline[5])
         return(SkyCoord(ra=ra,dec=dec,unit="deg"))
 
     @staticmethod
     def line_to_bandINFO(rawline, band="?"):
-        #print(rawline[14:21], rawline[21:28], rawline[28:])
         bandINFO={  globals()["%s"%band]:   float(rawline[14:21]),
                     globals()["d%s"%band]:  float(rawline[21:28]),
                     globals()["%scls"%band]:float(rawline[28:])}
@@ -97,7 +115,7 @@ class Catalog(object):
             serial_out.write(b"END\n")
 
     @classmethod
-    def from_serialised(cls):
+    def from_serialised(cls): #ok i think this sucks too, its just a memory problem
         with open("%s/tmp.serial"%OUT, "rb") as serial_in:
             stream=b""
             line=b""
@@ -122,14 +140,11 @@ class Catalog(object):
                     if(i%1000==0):print(i)
         return cls
 
-
     @classmethod
     def from_dict(cls, param_dict):
         cls=cls(size=param_dict["size"],
                 catalog=param_dict["catalog"])
         return cls
-
-
 
     @property
     def g(self): #not ideal but ok for now
@@ -139,16 +154,9 @@ class Catalog(object):
         return(s[i] for s in self.sources)
     
 if __name__=="__main__":
-    import time
     #c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
+    c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%DATA)
+    #c=Catalog.from_pandas_to_array(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
     #c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
-    c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
-    #c.serialise()
-    #c=Catalog.from_serialised()
-    c.serialise()
-    print("dump")
-    c = c.from_serialised()
-    print(c.g)
-
-
+    #c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
 
