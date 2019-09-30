@@ -174,17 +174,31 @@ class Catalog(object):
     def colour(self, band1, band2):
         return( s.colour( band1, band2 ) for s in self.sources )
 
-    def crop(self, removing=()):
-        pass
-    
+    def crop(self, removing=(1,0,-9,-8,-3), override=True):
+        #ok this has some more work needed
+        #it will only append once now, but if star not resolved in one band it might not fully be cropped
+        _sources = []
+        for source in self.sources:
+            flag=True
+            for cls in "giJKH":
+                if(cls in source.bandDATA):
+                    if(source["%scls"%cls] in removing): flag=False
+            if(flag): _sources.append(source)
+        if(override): self.sources=_sources
+        return _sources
+
+    def __len__(self):
+        return(len(self.sources))
+
 if __name__=="__main__":
     c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
+    #c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%DATA)
     #print(c.dms_to_degrees(30,15,50))
     #print(c.hms_to_degrees(3,15,50))
     #c=Catalog.from_pandas_to_array(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
     #c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
-    #c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
 
-    print(list(c.i))
-    c.sources[0].colour('g','i')
+    print(len(c))
+    c.crop()
+    print(len(c))
