@@ -9,19 +9,20 @@ from Messier33.include.config import *
 from Messier33.src.source import Source
 
 class Catalog(object):
-    def __init__(self, catalog="null", size=0):
+    def __init__(self, catalog="null", size=0, name="null"):
         #self.sources=[Source]*size
         #self.sources=np.array([Source()]*size)#, dtype=Source)
         self.sources = [Source()]*size
         self.sources_array=None
 
         self.catalog=catalog
+        self.name=name
         self.size=size
 
     @classmethod
     def from_pandas(cls, filename="%s/pandas_m33_2009.unique"%DATA):
         _size=cls.filelength(filename)
-        cls=cls(catalog="pandas", size=_size)
+        cls=cls(catalog="pandas", size=_size, name=filename)
         with open(filename, 'r') as raw:
             for i,line in enumerate(raw.readlines()[:]):
                 splitline=cls.split_pandas_line(line, float)
@@ -37,7 +38,7 @@ class Catalog(object):
     @classmethod
     def from_wfcam(cls, filename="%s/wfcam_m33_lot.unique"%DATA):
         _size=cls.filelength(filename)
-        cls=cls(catalog="wfcam", size=_size)
+        cls=cls(catalog="wfcam", size=_size, name=filename)
         with open(filename, 'r') as raw:
             for i,line in enumerate(raw.readlines()[:]):
                 splitlist=cls.split_wfcam_line(line, float)
@@ -54,7 +55,7 @@ class Catalog(object):
     @classmethod
     def from_pandas_to_array(cls, filename="%s/pandas_m33_2009.unique"%DATA):
         _size=cls.filelength(filename)
-        cls=cls(catalog="pandas", size=_size)
+        cls=cls(catalog="pandas", size=_size, name=filename)
         cls.sources_array=np.zeros((_size,18))
         with open(filename, 'r') as file_in:
             for i,line in enumerate(file_in.readlines()):
@@ -185,6 +186,7 @@ class Catalog(object):
                     if(source["%scls"%cls] in removing): flag=False
             if(flag): _sources.append(source)
         if(override): self.sources=_sources
+        self.name+=".cropped"
         return _sources
 
     def __len__(self):
