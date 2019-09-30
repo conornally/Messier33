@@ -8,11 +8,11 @@ class Source(object):
         self.tmp = np.arange(len(self.bandDATA.keys()))
 
     def colour(self, band1, band2):
-        pass
+        #should i store this somewhere?
+        return(self[band1]-self[band2])
 
     def __getitem__(self, key):
         return(self.bandDATA[key])
-        #return(self.tmp[key])
 
     def __len__(self):
         return(6)

@@ -81,14 +81,6 @@ class Catalog(object):
                     #line[86:89], line[89:93]]
         return(list(dtype(x) for x in splitlist))
 
-    @classmethod
-    def xfrom_serialised(cls, filename="%s/out/tmp.npy"%ROOT):
-        with open(filename,'rb') as serial_in:
-            #cls=json.load(serial_in, object_hook=dict_to_obj)
-            #cls=pickle.load(serial_in)
-            cls=np.load(filename, allow_pickle=True)
-        return(cls)
-
     @staticmethod
     def line_to_skycoord(rawline): #this is very slow and SUPER memory intensive, i think ill convert to just float(degrees)
         ra="%s:%s:%s"%(rawline[0], rawline[1], rawline[2])
@@ -97,16 +89,21 @@ class Catalog(object):
 
     @staticmethod
     def list_to_bandINFO(rawlist, band="g"):
+        """
         bandINFO={  globals()["%s"%band]:   rawlist[2],
                     globals()["d%s"%band]:  rawlist[3],
                     globals()["%scls"%band]:rawlist[4]}
+        """
+        bandINFO={  "%s"%band: rawlist[2],
+                    "d%s"%band:rawlist[3],
+                    "%scls"%band:rawlist[4]}
         return(bandINFO)
 
     @staticmethod
-    def line_to_bandINFO(rawline, band="?"):
-        bandINFO={  globals()["%s"%band]:   float(rawline[14:21]),
-                    globals()["d%s"%band]:  float(rawline[21:28]),
-                    globals()["%scls"%band]:float(rawline[28:])}
+    def line_to_bandINFO(rawline, band="g"):
+        bandINFO={  "%s"%band:   float(rawline[14:21]),
+                    "d%s"%band:  float(rawline[21:28]),
+                    "%scls"%band:float(rawline[28:])}
         return(bandINFO)
 
     @staticmethod
@@ -114,14 +111,6 @@ class Catalog(object):
         with open(filename) as f:
             for i,l in enumerate(f): pass
         return i+1
-    
-    def xserialise(self):
-        #temporary till i do filename
-        filename="%s/out/tmp.npy"%ROOT
-        with open(filename,'wb') as serial_out:
-            #json.dump(self, serial_out, default=convert_to_dict)
-            #pickle.dump(self,serial_out, protocol=0)#, default=convert_to_dict))
-            np.save(filename, self)
 
     def serialise(self):
         with open("%s/tmp.serial"%OUT, "wb") as serial_out:
@@ -177,23 +166,25 @@ class Catalog(object):
 
     @property
     def g(self): #not ideal but ok for now
-        return(s[g] for s in self.sources)
+        return(s['g'] for s in self.sources)
     @property
     def i(self): #not ideal but ok for now
-        return(s[i] for s in self.sources)
+        return(s['i'] for s in self.sources)
 
     def colour(self, band1, band2):
         return( s.colour( band1, band2 ) for s in self.sources )
+
+    def crop(self, removing=()):
+        pass
     
 if __name__=="__main__":
-    #c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
+    c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%DATA)
     #print(c.dms_to_degrees(30,15,50))
     #print(c.hms_to_degrees(3,15,50))
     #c=Catalog.from_pandas_to_array(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
-    c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
-    import time
-    start=time.time()
+    #c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
     #c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
-    print(time.time()-start)
 
+    print(list(c.i))
+    c.sources[0].colour('g','i')
