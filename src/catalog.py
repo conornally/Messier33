@@ -22,22 +22,16 @@ class Catalog(object):
     def from_pandas(cls, filename="%s/pandas_m33_2009.unique"%DATA):
         _size=cls.filelength(filename)
         cls=cls(catalog="pandas", size=_size)
-        bandINFO_step=31
         with open(filename, 'r') as raw:
             for i,line in enumerate(raw.readlines()[:]):
                 splitline=cls.split_pandas_line(line, float)
                 ra = cls.hms_to_degrees(*splitline[:3])
                 dec= cls.dms_to_degrees(*splitline[3:6])
-                #_skycoord=cls.line_to_skycoord(line[:24].split())
-                _skycoord=(ra,dec)
-                
-
-                _bandDATA=cls.line_to_bandINFO(line[24:55], band='g')
-                _bandDATA.update(cls.line_to_bandINFO(line[55:86], band='i'))
-                #cls.sources[i]=cls.sources[i](skycoord=_skycoord, bandDATA=_bandDATA)
-                cls.sources[i]=Source(skycoord=_skycoord, bandDATA=_bandDATA)
+                _bandDATA=cls.list_to_bandINFO(splitline[6:11], band='g')
+                _bandDATA.update(cls.list_to_bandINFO(splitline[11:16], band='i')) 
+                #cls.sources[i]=cls.sources[i](skycoord=(ra,dec), bandDATA=_bandDATA)
+                cls.sources[i]=Source(skycoord=(ra,dec), bandDATA=_bandDATA)
                 if(i%1000==0): print("%f"%(float(i)/_size)) 
-        #cls.sources = np.array(cls.sources)
         return cls
 
     @classmethod
@@ -46,11 +40,15 @@ class Catalog(object):
         cls=cls(catalog="wfcam", size=_size)
         with open(filename, 'r') as raw:
             for i,line in enumerate(raw.readlines()[:]):
-                _skycoord=cls.line_to_skycoord(line[:27].split())
+                splitlist=cls.split_wfcam_line(line, float)
+                ra=cls.hms_to_degrees(*splitlist[:3])
+                dec=cls.dms_to_degrees(*splitlist[3:6])
+                
+
                 _bandDATA=cls.line_to_bandINFO(line[30:61], band='J')
                 _bandDATA.update(cls.line_to_bandINFO(line[61:92], band='K'))
                 _bandDATA.update(cls.line_to_bandINFO(line[92:123],band='H'))
-                cls.sources[i]=Source(skycoord=_skycoord, bandDATA=_bandDATA)
+                cls.sources[i]=Source(skycoord=(ra,dec), bandDATA=_bandDATA)
         return cls
 
     @classmethod
@@ -68,8 +66,19 @@ class Catalog(object):
         splitlist =[line[:3], line[3:6], line[6:12], 
                     line[12:16], line[16:19], line[19:24], 
                     line[24:31], line[31:38], line[38:45], line[45:52], line[52:55], 
-                    line[55:62], line[62:69], line[69:76], line[76:83], line[83:86], 
-                    line[86:89], line[89:93]]
+                    line[55:62], line[62:69], line[69:76], line[76:83], line[83:86]]
+                    #line[86:89], line[89:93]]
+        return(list(dtype(x) for x in splitlist))
+
+    @staticmethod
+    def split_wfcam_line(line, dtype=str):
+        splitlist =[line[:3], line[3:6], line[6:13], 
+                    line[13:17], line[17:20], line[20:27], 
+                    line[27:30], 
+                    line[30:37], line[37:44], line[44:51], line[52:58], line[58:61],
+                    line[61:68], line[68:75], line[75:82], line[82:89], line[89:92],
+                    line[92:99], line[99:106], line[106:113], line[113:120], line[120:123] ]
+                    #line[86:89], line[89:93]]
         return(list(dtype(x) for x in splitlist))
 
     @classmethod
@@ -85,6 +94,13 @@ class Catalog(object):
         ra="%s:%s:%s"%(rawline[0], rawline[1], rawline[2])
         dec="%s:%s:%s"%(rawline[3], rawline[4], rawline[5])
         return(SkyCoord(ra=ra,dec=dec,unit="deg"))
+
+    @staticmethod
+    def list_to_bandINFO(rawlist, band="g"):
+        bandINFO={  globals()["%s"%band]:   rawlist[2],
+                    globals()["d%s"%band]:  rawlist[3],
+                    globals()["%scls"%band]:rawlist[4]}
+        return(bandINFO)
 
     @staticmethod
     def line_to_bandINFO(rawline, band="?"):
@@ -165,13 +181,19 @@ class Catalog(object):
     @property
     def i(self): #not ideal but ok for now
         return(s[i] for s in self.sources)
+
+    def colour(self, band1, band2):
+        return( s.colour( band1, band2 ) for s in self.sources )
     
 if __name__=="__main__":
-    c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
+    #c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%DATA)
-    print(c.dms_to_degrees(30,15,50))
-    print(c.hms_to_degrees(3,15,50))
+    #print(c.dms_to_degrees(30,15,50))
+    #print(c.hms_to_degrees(3,15,50))
     #c=Catalog.from_pandas_to_array(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
-    #c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
+    c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
+    import time
+    start=time.time()
     #c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
+    print(time.time()-start)
 
