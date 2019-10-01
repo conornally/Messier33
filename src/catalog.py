@@ -13,7 +13,7 @@ class Catalog(object):
     def __init__(self, catalog="null", size=0, name="null"):
         #self.sources=[Source]*size
         #self.sources=np.array([Source()]*size)#, dtype=Source)
-        self.sources = [Source()]*size
+        self.sources = [Source]*size
         self.sources_array=None
 
         self.catalog=catalog
@@ -32,8 +32,7 @@ class Catalog(object):
                 dec= cls.dms_to_degrees(*splitline[3:6])
                 _bandDATA=cls.list_to_bandINFO(splitline[6:11], band='g')
                 _bandDATA.update(cls.list_to_bandINFO(splitline[11:16], band='i')) 
-                #cls.sources[i]=cls.sources[i](skycoord=(ra,dec), bandDATA=_bandDATA)
-                cls.sources[i]=Source(skycoord=(ra,dec), bandDATA=_bandDATA)
+                cls.sources[i]=Source(coords=(ra,dec), bandDATA=_bandDATA)
                 load(i)
         return cls
 
@@ -41,21 +40,22 @@ class Catalog(object):
     def from_wfcam(cls, filename="%s/wfcam_m33_lot.unique"%DATA):
         _size=cls.filelength(filename)
         cls=cls(catalog="wfcam", size=_size, name=filename)
+        load = Loading(_size)
         with open(filename, 'r') as raw:
             for i,line in enumerate(raw.readlines()[:]):
-                splitlist=cls.split_wfcam_line(line, float)
-                ra=cls.hms_to_degrees(*splitlist[:3])
-                dec=cls.dms_to_degrees(*splitlist[3:6])
-                
-
-                _bandDATA=cls.line_to_bandINFO(line[30:61], band='J')
-                _bandDATA.update(cls.line_to_bandINFO(line[61:92], band='K'))
-                _bandDATA.update(cls.line_to_bandINFO(line[92:123],band='H'))
-                cls.sources[i]=Source(skycoord=(ra,dec), bandDATA=_bandDATA)
+                splitline=cls.split_wfcam_line(line, float)
+                ra=cls.hms_to_degrees(*splitline[:3])
+                dec=cls.dms_to_degrees(*splitline[3:6])
+                _bandDATA=cls.list_to_bandINFO(splitline[7:12], band='J')
+                _bandDATA.update(cls.list_to_bandINFO(splitline[12:17], band='K'))
+                _bandDATA.update(cls.list_to_bandINFO(splitline[17:22], band='H'))
+                cls.sources[i]=Source(coords=(ra,dec), bandDATA=_bandDATA)
+                load(i)
         return cls
 
     @classmethod
     def from_pandas_to_array(cls, filename="%s/pandas_m33_2009.unique"%DATA):
+        #will probably delete later
         _size=cls.filelength(filename)
         cls=cls(catalog="pandas", size=_size, name=filename)
         cls.sources_array=np.zeros((_size,18))
@@ -66,12 +66,12 @@ class Catalog(object):
 
     @staticmethod
     def split_pandas_line(line, dtype=str):
-        splitlist =[line[:3], line[3:6], line[6:12], 
+        splitline =[line[:3], line[3:6], line[6:12], 
                     line[12:16], line[16:19], line[19:24], 
                     line[24:31], line[31:38], line[38:45], line[45:52], line[52:55], 
                     line[55:62], line[62:69], line[69:76], line[76:83], line[83:86]]
                     #line[86:89], line[89:93]]
-        return(list(dtype(x) for x in splitlist))
+        return(list(dtype(x) for x in splitline))
 
     @staticmethod
     def split_wfcam_line(line, dtype=str):
@@ -92,21 +92,9 @@ class Catalog(object):
 
     @staticmethod
     def list_to_bandINFO(rawlist, band="g"):
-        """
-        bandINFO={  globals()["%s"%band]:   rawlist[2],
-                    globals()["d%s"%band]:  rawlist[3],
-                    globals()["%scls"%band]:rawlist[4]}
-        """
         bandINFO={  "%s"%band: rawlist[2],
                     "d%s"%band:rawlist[3],
                     "%scls"%band:rawlist[4]}
-        return(bandINFO)
-
-    @staticmethod
-    def line_to_bandINFO(rawline, band="g"):
-        bandINFO={  "%s"%band:   float(rawline[14:21]),
-                    "d%s"%band:  float(rawline[21:28]),
-                    "%scls"%band:float(rawline[28:])}
         return(bandINFO)
 
     @staticmethod
@@ -196,11 +184,9 @@ class Catalog(object):
 
 if __name__=="__main__":
     #c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
-    c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
+    #c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%DATA)
-    #print(c.dms_to_degrees(30,15,50))
-    #print(c.hms_to_degrees(3,15,50))
     #c=Catalog.from_pandas_to_array(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
-    #c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
+    c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
 
     c.crop()

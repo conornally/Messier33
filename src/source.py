@@ -1,8 +1,9 @@
 import pickle
 from Messier33.include.m33 import *
 class Source(object):
-    def __init__(self, skycoord=(0,0), bandDATA={}, size=6):
+    def __init__(self, skycoord=(0,0), coords=(0,0),  bandDATA={}, size=6):
         self.skycoord=skycoord
+        self.coords=coords
         self.bandDATA=bandDATA
         self.len=size
         self.tmp = np.arange(len(self.bandDATA.keys()))
