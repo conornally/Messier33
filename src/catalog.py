@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from Messier33.include.m33 import *
 from Messier33.include.config import *
 from Messier33.src.source import Source
+from Messier33.src.loading import Loading
 
 class Catalog(object):
     def __init__(self, catalog="null", size=0, name="null"):
@@ -23,6 +24,7 @@ class Catalog(object):
     def from_pandas(cls, filename="%s/pandas_m33_2009.unique"%DATA):
         _size=cls.filelength(filename)
         cls=cls(catalog="pandas", size=_size, name=filename)
+        load = Loading(_size)
         with open(filename, 'r') as raw:
             for i,line in enumerate(raw.readlines()[:]):
                 splitline=cls.split_pandas_line(line, float)
@@ -32,7 +34,7 @@ class Catalog(object):
                 _bandDATA.update(cls.list_to_bandINFO(splitline[11:16], band='i')) 
                 #cls.sources[i]=cls.sources[i](skycoord=(ra,dec), bandDATA=_bandDATA)
                 cls.sources[i]=Source(skycoord=(ra,dec), bandDATA=_bandDATA)
-                if(i%1000==0): print("%f"%(float(i)/_size)) 
+                load(i)
         return cls
 
     @classmethod
@@ -193,14 +195,12 @@ class Catalog(object):
         return(len(self.sources))
 
 if __name__=="__main__":
-    c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
-    #c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
+    #c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
+    c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%DATA)
     #print(c.dms_to_degrees(30,15,50))
     #print(c.hms_to_degrees(3,15,50))
     #c=Catalog.from_pandas_to_array(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
     #c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
 
-    print(len(c))
     c.crop()
-    print(len(c))

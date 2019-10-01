@@ -10,13 +10,15 @@ OUT	include/config.py	/^OUT=ROOT+"\/out"$/;"	v
 ROOT	include/config.py	/^ROOT="\/home\/conor\/mphys\/m33"$/;"	v
 Source	src/source.py	/^class Source(object):$/;"	c
 __getitem__	src/source.py	/^    def __getitem__(self, key):$/;"	m	class:Source	file:
-__init__	src/catalog.py	/^    def __init__(self, catalog="null", size=0):$/;"	m	class:Catalog
+__init__	src/catalog.py	/^    def __init__(self, catalog="null", size=0, name="null"):$/;"	m	class:Catalog
 __init__	src/source.py	/^    def __init__(self, skycoord=(0,0), bandDATA={}, size=6):$/;"	m	class:Source
+__len__	src/catalog.py	/^    def __len__(self):$/;"	m	class:Catalog	file:
 __len__	src/source.py	/^    def __len__(self):$/;"	m	class:Source	file:
-c	src/catalog.py	/^    c=Catalog.from_wfcam(filename="%s\/wfcam.test"%DATA)$/;"	v
+c	src/catalog.py	/^    c=Catalog.from_pandas(filename="%s\/pandas.test"%DATA)$/;"	v
 colour	src/catalog.py	/^    def colour(self, band1, band2):$/;"	m	class:Catalog
 colour	src/source.py	/^    def colour(self, band1, band2):$/;"	m	class:Source
 convert_to_dict	include/m33.py	/^def convert_to_dict(obj):$/;"	f
+crop	src/catalog.py	/^    def crop(self, removing=(1,0,-9,-8,-3), override=True):$/;"	m	class:Catalog
 dict_to_obj	include/m33.py	/^def dict_to_obj(_dict):$/;"	f
 dms_to_degrees	src/catalog.py	/^    def dms_to_degrees(d,m,s):$/;"	m	class:Catalog
 filelength	src/catalog.py	/^    def filelength(filename):$/;"	m	class:Catalog
@@ -28,14 +30,11 @@ from_wfcam	src/catalog.py	/^    def from_wfcam(cls, filename="%s\/wfcam_m33_lot.
 g	src/catalog.py	/^    def g(self): #not ideal but ok for now$/;"	m	class:Catalog
 hms_to_degrees	src/catalog.py	/^    def hms_to_degrees(h,m,s):$/;"	m	class:Catalog
 i	src/catalog.py	/^    def i(self): #not ideal but ok for now$/;"	m	class:Catalog
-line_to_bandINFO	src/catalog.py	/^    def line_to_bandINFO(rawline, band="?"):$/;"	m	class:Catalog
+line_to_bandINFO	src/catalog.py	/^    def line_to_bandINFO(rawline, band="g"):$/;"	m	class:Catalog
 line_to_skycoord	src/catalog.py	/^    def line_to_skycoord(rawline): #this is very slow and SUPER memory intensive, i think ill convert to just float(degrees)$/;"	m	class:Catalog
 list_to_bandINFO	src/catalog.py	/^    def list_to_bandINFO(rawlist, band="g"):$/;"	m	class:Catalog
 serial	src/source.py	/^    def serial(self):$/;"	m	class:Source
 serialise	src/catalog.py	/^    def serialise(self):$/;"	m	class:Catalog
 split_pandas_line	src/catalog.py	/^    def split_pandas_line(line, dtype=str):$/;"	m	class:Catalog
 split_wfcam_line	src/catalog.py	/^    def split_wfcam_line(line, dtype=str):$/;"	m	class:Catalog
-start	src/catalog.py	/^    start=time.time()$/;"	v
 x	src/source.py	/^    x=  Source()$/;"	v
-xfrom_serialised	src/catalog.py	/^    def xfrom_serialised(cls, filename="%s\/out\/tmp.npy"%ROOT):$/;"	m	class:Catalog
-xserialise	src/catalog.py	/^    def xserialise(self):$/;"	m	class:Catalog
