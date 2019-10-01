@@ -211,6 +211,10 @@ class Catalog(object):
     def __getitem__(self, i):
         return(self.sources[i])
 
+    def radial_distribution(self, origin=(0,0)):
+        dist = [ s.getradius(origin) for s in self.sources ]
+        return(dist)
+
 if __name__=="__main__":
     #c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
     c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
