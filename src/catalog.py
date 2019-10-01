@@ -99,6 +99,7 @@ class Catalog(object):
 
     @staticmethod
     def filelength(filename):
+        i=0
         with open(filename) as f:
             for i,l in enumerate(f): pass
         return i+1
@@ -181,6 +182,9 @@ class Catalog(object):
 
     def __len__(self):
         return(len(self.sources))
+
+    def __getitem__(self, i):
+        return(self.sources[i])
 
 if __name__=="__main__":
     #c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
