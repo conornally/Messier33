@@ -6,6 +6,9 @@
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 Catalog	src/catalog.py	/^class Catalog(object):$/;"	c
 DATA	include/config.py	/^DATA=ROOT+"\/data\/test"$/;"	v
+H	src/catalog.py	/^    def H(self): #not ideal but ok for now$/;"	m	class:Catalog
+J	src/catalog.py	/^    def J(self): #not ideal but ok for now$/;"	m	class:Catalog
+K	src/catalog.py	/^    def K(self): #not ideal but ok for now$/;"	m	class:Catalog
 Loading	src/loading.py	/^class Loading:$/;"	c
 Messier33Test	tests/test_messier33.py	/^class Messier33Test(unittest.TestCase):$/;"	c
 OUT	include/config.py	/^OUT=ROOT+"\/out"$/;"	v
@@ -15,15 +18,20 @@ __call__	src/loading.py	/^    def __call__(self, i):$/;"	m	class:Loading	file:
 __getitem__	src/catalog.py	/^    def __getitem__(self, i):$/;"	m	class:Catalog	file:
 __getitem__	src/source.py	/^    def __getitem__(self, key):$/;"	m	class:Source	file:
 __init__	src/catalog.py	/^    def __init__(self, catalog="null", size=0, name="null"):$/;"	m	class:Catalog
-__init__	src/loading.py	/^    def __init__(self, n_max, length=25):$/;"	m	class:Loading
+__init__	src/loading.py	/^    def __init__(self, n_max, length=25, prefix="loading"):$/;"	m	class:Loading
 __init__	src/source.py	/^    def __init__(self, skycoord=(0,0), coords=(0,0),  bandDATA={}, size=6):$/;"	m	class:Source
 __len__	src/catalog.py	/^    def __len__(self):$/;"	m	class:Catalog	file:
 __len__	src/source.py	/^    def __len__(self):$/;"	m	class:Source	file:
-c	src/catalog.py	/^    c=Catalog.from_wfcam(filename="%s\/wfcam.test"%DATA)$/;"	v
+c	src/catalog.py	/^    c=Catalog.from_pandas(filename="%s\/..\/initial\/pandas_m33_2009.unique"%DATA)$/;"	v
 colour	src/catalog.py	/^    def colour(self, band1, band2):$/;"	m	class:Catalog
 colour	src/source.py	/^    def colour(self, band1, band2):$/;"	m	class:Source
 convert_to_dict	include/m33.py	/^def convert_to_dict(obj):$/;"	f
 crop	src/catalog.py	/^    def crop(self, removing=(1,0,-9,-8,-3), override=True):$/;"	m	class:Catalog
+dH	src/catalog.py	/^    def dH(self): #not ideal but ok for now$/;"	m	class:Catalog
+dJ	src/catalog.py	/^    def dJ(self): #not ideal but ok for now$/;"	m	class:Catalog
+dK	src/catalog.py	/^    def dK(self): #not ideal but ok for now$/;"	m	class:Catalog
+dg	src/catalog.py	/^    def dg(self): #not ideal but ok for now$/;"	m	class:Catalog
+di	src/catalog.py	/^    def di(self): #not ideal but ok for now$/;"	m	class:Catalog
 dict_to_obj	include/m33.py	/^def dict_to_obj(_dict):$/;"	f
 display	src/loading.py	/^    def display(self):$/;"	m	class:Loading
 dms_to_degrees	src/catalog.py	/^    def dms_to_degrees(d,m,s):$/;"	m	class:Catalog

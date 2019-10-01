@@ -1,17 +1,19 @@
 from sys import stdout
 
 class Loading:
-    def __init__(self, n_max, length=25):
+    def __init__(self, n_max, length=25, prefix="loading"):
         self.n_max=n_max
         self.frac=0
         self.n=0
         self.length=length
+        self.prefix=prefix
 
     def __call__(self, i):
         if(i==0): 
-            stdout.write("|")
+            stdout.write("%s|"%self.prefix)
             for i in range(self.length): stdout.write(" ")
             stdout.write("|\x1b[%sD"%(self.length+1))
+        elif(i==(self.n_max-1)): stdout.write("=\n")
         else:
             self.frac=i/self.n_max
             _n= int(self.length*self.frac)

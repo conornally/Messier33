@@ -213,9 +213,9 @@ class Catalog(object):
 
 if __name__=="__main__":
     #c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
-    #c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
+    c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
-    c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
+    #c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
 
     c.crop()
