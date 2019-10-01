@@ -162,6 +162,31 @@ class Catalog(object):
     @property
     def i(self): #not ideal but ok for now
         return(s['i'] for s in self.sources)
+    @property
+    def J(self): #not ideal but ok for now
+        return(s['J'] for s in self.sources)
+    @property
+    def H(self): #not ideal but ok for now
+        return(s['H'] for s in self.sources)
+    @property
+    def K(self): #not ideal but ok for now
+        return(s['K'] for s in self.sources)
+
+    @property
+    def dg(self): #not ideal but ok for now
+        return(s['dg'] for s in self.sources)
+    @property
+    def di(self): #not ideal but ok for now
+        return(s['di'] for s in self.sources)
+    @property
+    def dJ(self): #not ideal but ok for now
+        return(s['dJ'] for s in self.sources)
+    @property
+    def dH(self): #not ideal but ok for now
+        return(s['dH'] for s in self.sources)
+    @property
+    def dK(self): #not ideal but ok for now
+        return(s['dK'] for s in self.sources)
 
     def colour(self, band1, band2):
         return( s.colour( band1, band2 ) for s in self.sources )
