@@ -7,3 +7,6 @@ loading catalog takes too long!
 
 unit testing
 >	need to get this started before data structure becomes too big
+
+conversion to c++???
+>	thatd be cool but is it worth trading run speed for dev time?
