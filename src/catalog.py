@@ -4,10 +4,7 @@ from matplotlib import use
 use("Agg")
 import matplotlib.pyplot as plt
 
-from Messier33.include.m33 import *
-from Messier33.include.config import *
-from Messier33.src.loading import Loading
-from Messier33.src.fileio import *
+import Messier33
 
 
 class Catalog(object):
@@ -66,19 +63,19 @@ class Catalog(object):
 
     @classmethod
     def from_pandas(cls, filename):
-        cls=cls.from_dict(import_from_raw(filename, style="pandas"))
+        cls=cls.from_dict(Messier33.io.import_from_raw(filename, style="pandas"))
         cls.name=filename.split('/')[-1]
         return cls
     
     @classmethod
     def from_wfcam(cls, filename):
-        cls=cls.from_dict(import_from_raw(filename, style="wfcam"))
+        cls=cls.from_dict(Messier33.io.import_from_raw(filename, style="wfcam"))
         cls.name=filename.split('/')[-1]
         return cls
 
     @classmethod
     def from_serialised(cls, filename):
-        cls=cls.from_dict(import_from_serialised(filename))
+        cls=cls.from_dict(Messier33.io.import_from_serialised(filename))
         cls.name=filename.split('/')[-1]
         return cls
 
@@ -89,18 +86,18 @@ class Catalog(object):
                 "indices":list(self.indices.keys())})
 
     def export(self, filename=''):
-        if(filename==''): filename="%s/%s.pickle"%(OUT, self.name)
+        if(filename==''): filename="%s/%s.pickle"%(Messier33.OUT, self.name)
         serialise(filename, self.to_dict())
 
 
 if __name__=="__main__":
-    #c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
-    #c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
-    #c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%DATA)
-    #c=Catalog.from_pandas_to_array(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
-    #c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
+    #c=Catalog.from_pandas(filename="%s/pandas.test"%Messier33.DATA)
+    #c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%Messier33.DATA)
+    #c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%Messier33.DATA)
+    #c=Catalog.from_pandas_to_array(filename="%s/../initial/pandas_m33_2009.unique"%Messier33.DATA)
+    c=Catalog.from_wfcam(filename="%s/wfcam.test"%Messier33.DATA)
     #c.export()
-    c=Catalog.from_serialised("%s/wfcam.test.pickle"%OUT)
+    c=Catalog.from_serialised("%s/wfcam.test.pickle"%Messier33.OUT)
     c.crop()
 
     #c.crop()

@@ -8,6 +8,8 @@ SYNOPSIS
 import numpy as np
 import pickle
 from Messier33 import hms_to_degrees, dms_to_degrees
+from Messier33.src.loading import Loading
+
 
 raw_dict = {"data":np.array,
             "style":"pandas",
@@ -66,8 +68,10 @@ def import_from_raw(filename, style="pandas"):
     _size = (filelength(filename), n_cols["%s_reduced"%style])
     data = np.zeros(_size)
     indices=raw_dict["indices"]
+    load = Loading(_size[0], prefix=filename)
     with open(filename) as f:
         for i, line in enumerate(f.readlines()):
+            load(i)
             if(style=="pandas"):
                 data[i] = reduce_line_pandas(line)
                 indices=["ra","dec","g","dg","gclc","i","di","icls"]
