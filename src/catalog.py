@@ -8,20 +8,23 @@ from Messier33.include.m33 import *
 from Messier33.include.config import *
 from Messier33.src.source import Source
 from Messier33.src.loading import Loading
+from Messier33.src.fileio import *
+
 
 class Catalog(object):
-    def __init__(self, catalog="null", size=0, name="null"):
+    def __init__(self, style="null", size=(0,0), name="null", data=[]):
         #self.sources=[Source]*size
         #self.sources=np.array([Source()]*size)#, dtype=Source)
-        self.sources = [Source]*size
+        self.sources = [Source]*size[0]
         self.sources_array=None
+        self._data = data
 
-        self.catalog=catalog
+        self.style=style
         self.name=name
         self.size=size
 
     @classmethod
-    def from_pandas(cls, filename="%s/pandas_m33_2009.unique"%DATA):
+    def xfrom_pandas(cls, filename="%s/pandas_m33_2009.unique"%DATA):
         _size=cls.filelength(filename)
         cls=cls(catalog="pandas", size=_size, name=filename)
         load = Loading(_size)
@@ -37,7 +40,7 @@ class Catalog(object):
         return cls
 
     @classmethod
-    def from_wfcam(cls, filename="%s/wfcam_m33_lot.unique"%DATA):
+    def xfrom_wfcam(cls, filename="%s/wfcam_m33_lot.unique"%DATA):
         _size=cls.filelength(filename)
         cls=cls(catalog="wfcam", size=_size, name=filename)
         load = Loading(_size)
@@ -104,7 +107,7 @@ class Catalog(object):
             for i,l in enumerate(f): pass
         return i+1
 
-    def serialise(self):
+    def xserialise(self):
         with open("%s/tmp.serial"%OUT, "wb") as serial_out:
 
             sources = self.__dict__.pop("sources")
@@ -143,7 +146,7 @@ class Catalog(object):
         return cls
 
     @classmethod
-    def from_dict(cls, param_dict):
+    def xfrom_dict(cls, param_dict):
         cls=cls(size=param_dict["size"],
                 catalog=param_dict["catalog"])
         return cls
@@ -215,11 +218,53 @@ class Catalog(object):
         dist = [ s.getradius(origin) for s in self.sources ]
         return(dist)
 
+    @classmethod
+    def from_dict(cls, raw_dict):
+        cls = cls(  data=raw_dict["data"],
+                    style=raw_dict["style"],
+                    size=raw_dict["size"])
+        return cls
+
+    @classmethod
+    def from_pandas(cls, filename):
+        cls=cls.from_dict(import_from_raw(filename, style="pandas"))
+        cls.name=filename
+        return cls
+    
+    @classmethod
+    def from_wfcam(cls, filename):
+        cls=cls.from_dict(import_from_raw(filename, style="wfcam"))
+        cls.name=filename
+        return cls
+
+    @classmethod
+    def from_serialised(cls, filename):
+        cls=cls.from_dict(import_from_serialised(filename))
+        cls.name=filename
+        return cls
+
+    def to_dict(self):
+        #might need to add indices in?
+        return({"data":self._data,
+                "style":self.style,
+                "size":self.size})
+
+    def export(self, filename):
+        print(filename)
+        serialise(filename, self.to_dict())
+
+
 if __name__=="__main__":
     #c=Catalog.from_pandas(filename="%s/pandas.test"%DATA)
-    c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
+    #c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
     #c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
+    c=Catalog.from_wfcam("%s/wfcam.test"%DATA)
+    print(c._data[0])
+    c.export("%s/tmp.pickle"%OUT)
+    c=Catalog.from_serialised("%s/tmp.pickle"%OUT)
+    print(c._data[0])
 
-    c.crop()
+
+    #c.crop()

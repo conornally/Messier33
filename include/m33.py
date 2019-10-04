@@ -24,4 +24,9 @@ def dict_to_obj(_dict):
         class_=getattr(module,class_name)
         return(class_(**_dict))
 
+def hms_to_degrees(h,m,s):
+    return((h*15.0)+(m/4.0)+(s/240.0))
+
+def dms_to_degrees(d,m,s):
+    return(d+(m/60.0)+(s/3600.0))
 
