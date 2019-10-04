@@ -228,19 +228,19 @@ class Catalog(object):
     @classmethod
     def from_pandas(cls, filename):
         cls=cls.from_dict(import_from_raw(filename, style="pandas"))
-        cls.name=filename
+        cls.name=filename.split('/')[-1]
         return cls
     
     @classmethod
     def from_wfcam(cls, filename):
         cls=cls.from_dict(import_from_raw(filename, style="wfcam"))
-        cls.name=filename
+        cls.name=filename.split('/')[-1]
         return cls
 
     @classmethod
     def from_serialised(cls, filename):
         cls=cls.from_dict(import_from_serialised(filename))
-        cls.name=filename
+        cls.name=filename.split('/')[-1]
         return cls
 
     def to_dict(self):
@@ -249,8 +249,8 @@ class Catalog(object):
                 "style":self.style,
                 "size":self.size})
 
-    def export(self, filename):
-        print(filename)
+    def export(self, filename=''):
+        if(filename==''): filename="%s/%s.pickle"%(OUT, self.name)
         serialise(filename, self.to_dict())
 
 
@@ -260,10 +260,7 @@ if __name__=="__main__":
     #c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/../initial/pandas_m33_2009.unique"%DATA)
     #c=Catalog.from_wfcam(filename="%s/wfcam.test"%DATA)
-    c=Catalog.from_wfcam("%s/wfcam.test"%DATA)
-    print(c._data[0])
-    c.export("%s/tmp.pickle"%OUT)
-    c=Catalog.from_serialised("%s/tmp.pickle"%OUT)
+    c=Catalog.from_serialised("%s/wfcam.test.pickle"%OUT)
     print(c._data[0])
 
 
