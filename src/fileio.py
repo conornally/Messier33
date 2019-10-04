@@ -73,7 +73,7 @@ def import_from_raw(filename, style="pandas"):
                 indices=["ra","dec","g","dg","gclc","i","di","icls"]
             if(style=="wfcam"):
                 data[i] = reduce_line_wfcam(line)
-                indices=["ra","dec","J","dJ","Jclc","H","dH","Hcls", "K", "dK", "Kcls"]
+                indices=["ra","dec","J","dJ","Jcls","H","dH","Hcls", "K", "dK", "Kcls"]
     return( {"data":data, "style":style, "size":_size, "indices":indices})
 
 def filelength(filename):
