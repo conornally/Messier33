@@ -4,70 +4,44 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-CFLAGS	Makefile	/^CFLAGS	:= -w$/;"	m
 Catalog	src/catalog.py	/^class Catalog(object):$/;"	c
 DATA	include/config.py	/^DATA=ROOT+"\/data\/test"$/;"	v
-H	src/catalog.py	/^    def H(self): #not ideal but ok for now$/;"	m	class:Catalog
-J	src/catalog.py	/^    def J(self): #not ideal but ok for now$/;"	m	class:Catalog
-K	src/catalog.py	/^    def K(self): #not ideal but ok for now$/;"	m	class:Catalog
 Loading	src/loading.py	/^class Loading:$/;"	c
 Messier33Test	tests/test_messier33.py	/^class Messier33Test(unittest.TestCase):$/;"	c
 OUT	include/config.py	/^OUT=ROOT+"\/out"$/;"	v
 ROOT	include/config.py	/^ROOT="\/home\/conor\/mphys\/m33"$/;"	v
-Source	src/source.py	/^class Source(object):$/;"	c
 __call__	src/loading.py	/^    def __call__(self, i):$/;"	m	class:Loading	file:
-__getitem__	src/catalog.py	/^    def __getitem__(self, i):$/;"	m	class:Catalog	file:
-__getitem__	src/source.py	/^    def __getitem__(self, key):$/;"	m	class:Source	file:
-__init__	src/catalog.py	/^    def __init__(self, catalog="null", size=0, name="null"):$/;"	m	class:Catalog
+__getitem__	src/catalog.py	/^    def __getitem__(self, key):$/;"	m	class:Catalog	file:
+__init__	src/catalog.py	/^    def __init__(self, data=[], size=(0,0), style="null", name="null", indices=[]):$/;"	m	class:Catalog
 __init__	src/loading.py	/^    def __init__(self, n_max, length=25, prefix="loading"):$/;"	m	class:Loading
-__init__	src/source.py	/^    def __init__(self, skycoord=(0,0), coords=(0,0),  bandDATA={}, size=6):$/;"	m	class:Source
 __len__	src/catalog.py	/^    def __len__(self):$/;"	m	class:Catalog	file:
-__len__	src/source.py	/^    def __len__(self):$/;"	m	class:Source	file:
-c	src/catalog.py	/^    c=Catalog.from_pandas(filename="%s\/..\/initial\/pandas_m33_2009.unique"%DATA)$/;"	v	class:Catalog
+c	src/catalog.py	/^    c=Catalog.from_serialised("%s\/wfcam.test.pickle"%Messier33.OUT)$/;"	v
+c	src/catalog.py	/^    c=Catalog.from_wfcam(filename="%s\/wfcam.test"%Messier33.DATA)$/;"	v
 colour	src/catalog.py	/^    def colour(self, band1, band2):$/;"	m	class:Catalog
-colour	src/source.py	/^    def colour(self, band1, band2):$/;"	m	class:Source
 convert_to_dict	include/m33.py	/^def convert_to_dict(obj):$/;"	f
-crop	src/catalog.py	/^    def crop(self, removing=(1,0,-9,-8,-3), override=True):$/;"	m	class:Catalog
-dH	src/catalog.py	/^    def dH(self): #not ideal but ok for now$/;"	m	class:Catalog
-dJ	src/catalog.py	/^    def dJ(self): #not ideal but ok for now$/;"	m	class:Catalog
-dK	src/catalog.py	/^    def dK(self): #not ideal but ok for now$/;"	m	class:Catalog
-dg	src/catalog.py	/^    def dg(self): #not ideal but ok for now$/;"	m	class:Catalog
-di	src/catalog.py	/^    def di(self): #not ideal but ok for now$/;"	m	class:Catalog
+crop	src/catalog.py	/^    def crop(self, removing=(1,0,-9,-8.-3)):$/;"	m	class:Catalog
 dict_to_obj	include/m33.py	/^def dict_to_obj(_dict):$/;"	f
 display	src/loading.py	/^    def display(self):$/;"	m	class:Loading
 dms_to_degrees	include/m33.py	/^def dms_to_degrees(d,m,s):$/;"	f
-dms_to_degrees	src/catalog.py	/^    def dms_to_degrees(d,m,s):$/;"	m	class:Catalog
-export	src/fileio.py	/^def export(filename): pass$/;"	f
-filelength	src/catalog.py	/^    def filelength(filename):$/;"	m	class:Catalog
+export	src/catalog.py	/^    def export(self, filename=''):$/;"	m	class:Catalog
 filelength	src/fileio.py	/^def filelength(filename):$/;"	f
-from_dict	src/catalog.py	/^    def from_dict(cls, param_dict):$/;"	m	class:Catalog
-from_pandas	src/catalog.py	/^    def from_pandas(cls, filename="%s\/pandas_m33_2009.unique"%DATA):$/;"	m	class:Catalog
-from_pandas_to_array	src/catalog.py	/^    def from_pandas_to_array(cls, filename="%s\/pandas_m33_2009.unique"%DATA):$/;"	m	class:Catalog
-from_serialised	src/catalog.py	/^    def from_serialised(cls): #ok i think this sucks too, its just a memory problem$/;"	m	class:Catalog
-from_wfcam	src/catalog.py	/^    def from_wfcam(cls, filename="%s\/wfcam_m33_lot.unique"%DATA):$/;"	m	class:Catalog
-g	src/catalog.py	/^    def g(self): #not ideal but ok for now$/;"	m	class:Catalog
-getradius	src/source.py	/^    def getradius(self, origin=(0,0)):$/;"	m	class:Source
+from_dict	src/catalog.py	/^    def from_dict(cls, raw_dict):$/;"	m	class:Catalog
+from_pandas	src/catalog.py	/^    def from_pandas(cls, filename):$/;"	m	class:Catalog
+from_serialised	src/catalog.py	/^    def from_serialised(cls, filename):$/;"	m	class:Catalog
+from_wfcam	src/catalog.py	/^    def from_wfcam(cls, filename):$/;"	m	class:Catalog
 hms_to_degrees	include/m33.py	/^def hms_to_degrees(h,m,s):$/;"	f
-hms_to_degrees	src/catalog.py	/^    def hms_to_degrees(h,m,s):$/;"	m	class:Catalog
-i	src/catalog.py	/^    def i(self): #not ideal but ok for now$/;"	m	class:Catalog
-import_from_pickle	src/fileio.py	/^def import_from_pickle(filename): return raw_dict$/;"	f
 import_from_raw	src/fileio.py	/^def import_from_raw(filename, style="pandas"):$/;"	f
+import_from_serialised	src/fileio.py	/^def import_from_serialised(filename):$/;"	f
 l	src/loading.py	/^    l=Loading(100, 30)$/;"	v
-line_to_skycoord	src/catalog.py	/^    def line_to_skycoord(rawline): #this is very slow and SUPER memory intensive, i think ill convert to just float(degrees)$/;"	m	class:Catalog
-list_to_bandINFO	src/catalog.py	/^    def list_to_bandINFO(rawlist, band="g"):$/;"	m	class:Catalog
-n_cols	src/fileio.py	/^n_cols = {"pandas_raw":18, "wfcam_raw":22, "pandas_reduced":8, "wfcam_reduced":13}$/;"	v
-radial_distribution	src/catalog.py	/^    def radial_distribution(self, origin=(0,0)):$/;"	m	class:Catalog
-raw_dict	src/fileio.py	/^raw_dict = {"header":[],$/;"	v
+n_cols	src/fileio.py	/^n_cols = {"pandas_raw":18, "wfcam_raw":22, "pandas_reduced":8, "wfcam_reduced":11}$/;"	v
+raw_dict	src/fileio.py	/^raw_dict = {"data":np.array,$/;"	v
 reduce_line_pandas	src/fileio.py	/^def reduce_line_pandas(line):$/;"	f
 reduce_line_wfcam	src/fileio.py	/^def reduce_line_wfcam(line):$/;"	f
-serial	src/source.py	/^    def serial(self):$/;"	m	class:Source
-serialise	src/catalog.py	/^    def serialise(self):$/;"	m	class:Catalog
-split_pandas_line	src/catalog.py	/^    def split_pandas_line(line, dtype=str):$/;"	m	class:Catalog
+serialise	src/fileio.py	/^def serialise(filename, catalog_dict={}):$/;"	f
 split_pandas_line	src/fileio.py	/^def split_pandas_line(line, dtype=str):$/;"	f
-split_wfcam_line	src/catalog.py	/^    def split_wfcam_line(line, dtype=str):$/;"	m	class:Catalog
 split_wfcam_line	src/fileio.py	/^def split_wfcam_line(line, dtype=str):$/;"	f
 test_filelength	tests/test_messier33.py	/^    def test_filelength(self):$/;"	m	class:Messier33Test
 test_from_pandas	tests/test_messier33.py	/^    def test_from_pandas(self):$/;"	m	class:Messier33Test
 test_from_wfcam	tests/test_messier33.py	/^    def test_from_wfcam(self):$/;"	m	class:Messier33Test
 test_hmsdms	tests/test_messier33.py	/^    def test_hmsdms(self):$/;"	m	class:Messier33Test
-x	src/source.py	/^    x=  Source()$/;"	v
+to_dict	src/catalog.py	/^    def to_dict(self):$/;"	m	class:Catalog

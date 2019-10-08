@@ -7,6 +7,12 @@ loading catalog takes too long!
 
 unit testing
 >	need to get this started before data structure becomes too big
+>>>	total revamp of underlying data structure has screwed up my unit testing...
 
 conversion to c++???
 >	thatd be cool but is it worth trading run speed for dev time?
+
+inclusion of scripts into API??
+>	i could put the colour_mag etc. and catalogconverter scripts in here?
+
+pickle still seems to have trouble with loading the bigger files

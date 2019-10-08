@@ -78,7 +78,8 @@ def import_from_raw(filename, style="pandas"):
             if(style=="wfcam"):
                 data[i] = reduce_line_wfcam(line)
                 indices=["ra","dec","J","dJ","Jcls","H","dH","Hcls", "K", "dK", "Kcls"]
-    return( {"data":data, "style":style, "size":_size, "indices":indices})
+            data[i,0:2] = np.radians(data[i,0:2])
+    return( {"data":data, "style":style, "size":_size, "indices":indices, "units":"rads"})
 
 def filelength(filename):
     """
@@ -86,7 +87,7 @@ def filelength(filename):
     RETURN: number of file lines
     """
     i=0
-    with open(filename) as f:
+    with open(filename, "rb") as f:
         for i,l in enumerate(f.readlines(),1):pass
     return(i)
 
