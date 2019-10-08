@@ -46,7 +46,12 @@ class Catalog(object):
         return(self._data.shape[0])
 
     def __getitem__(self, key):
-        return( self._data[:,self.indices[key]])
+        if(type(key)==int): return self._data[key]
+        else: return( self._data[:,self.indices[key]])
+    
+    def __setitem__(self, key, item):
+        if(type(key)==int): self._data[key]=item
+        else: self._data[:,self.indices[key]]=item
 
     @classmethod
     def from_dict(cls, raw_dict):
@@ -91,11 +96,21 @@ class Catalog(object):
         Messier33.io.serialise(filename, self.to_dict())
 
     def rads_to_stdcoords(self, A=0, D=0):
+        if(self.units=="deg"):
+            self._data[:,0] = np.radians(self['ra'])
+            self._data[:,1] = np.radians(self['dec'])
+            self.units="rads"
         if(not A):A=Messier33.mean_coords.mean_RA
         if(not D):D=Messier33.mean_coords.mean_DEC
-        #print(A,D)
-        xi = (np.cos(self['dec'])*np.sin(self['ra']-A))/( np.sin(D)*np.sin(self['dec'])+np.cos(D)*np.cos(self['dec'])*np.cos(self['ra']-A))
-        eta= (np.cos(D)*np.sin(self['dec'])-np.sin(D)*np.cos(self['dec'])*np.cos(self['ra']-A))/(np.sin(D)*np.sin(self['dec'])+np.cos(D)*np.cos(self['dec'])*np.cos(self['ra']-A))
+        if(self.units=="rads"):
+            #for now this overwrites the ra/dec column, can change this if needed
+            xi = (np.cos(self['dec'])*np.sin(self['ra']-A))/( np.sin(D)*np.sin(self['dec'])+np.cos(D)*np.cos(self['dec'])*np.cos(self['ra']-A))
+            eta= (np.cos(D)*np.sin(self['dec'])-np.sin(D)*np.cos(self['dec'])*np.cos(self['ra']-A))/(np.sin(D)*np.sin(self['dec'])+np.cos(D)*np.cos(self['dec'])*np.cos(self['ra']-A))
+            self._data[:,0] = xi
+            self._data[:,1] = eta
+            self.units="stdcoord"
+            self.indices['xi']=self.indices['ra']
+            self.indices['eta']=self.indices['dec']
 
 
 if __name__=="__main__":
