@@ -74,7 +74,7 @@ def import_from_raw(filename, style="pandas"):
             load(i)
             if(style=="pandas"):
                 data[i] = reduce_line_pandas(line)
-                indices=["ra","dec","g","dg","gclc","i","di","icls"]
+                indices=["ra","dec","g","dg","gcls","i","di","icls"]
             if(style=="wfcam"):
                 data[i] = reduce_line_wfcam(line)
                 indices=["ra","dec","J","dJ","Jcls","H","dH","Hcls", "K", "dK", "Kcls"]
