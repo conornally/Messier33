@@ -1,3 +1,4 @@
+import numpy as np
 
 class ParentMask(object):
     """
@@ -13,7 +14,9 @@ class ParentMask(object):
         INPUT:  catalog to mask
         FUNC:   Usually not user accessed, will generate cropping index without applying the crop 
         """
-        if(self.key not in catalog.indices): raise ValueError("key='%s' not in catalog"%self.key)
+
+        if(type(self.key)!=list):
+            if(self.key not in catalog.indices): raise ValueError("key='%s' not in catalog"%self.key)
         self._crop(catalog)
         if(self.inverse): self.index=self.invert_index(len(catalog))
 
@@ -73,6 +76,22 @@ class Slice(ParentMask):
     def _crop(self, catalog):
         for i,value in enumerate(catalog[self.key]):
             if(self.bounds[0]<value and value<self.bounds[1]): self.index.append(i)
+
+class Box(ParentMask):
+    def __init__(self, bounds, keys, inverse=False):
+        super(Box, self).__init__(keys, inverse)
+        self.bounds=np.array(bounds).flatten()
+        if(len(self.bounds)!=4): raise ValueError("bounds must contain 4 values, got shape %s"%np.shape(bounds))
+        self.slices = [Slice(bounds[:2], keys[0], inverse), Slice(bounds[2:], keys[1], inverse)]
+
+    def _crop(self, catalog):
+        for mask_slice in self.slices:
+            mask_slice.generate_index(catalog)
+        
+        self.index=list( set(self.slices[0].index) & set(self.slices[1].index))
+
+
+        
 
 
 if __name__=="__main__":
