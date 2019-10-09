@@ -36,12 +36,6 @@ class Catalog(object):
         self._data = self._data[mask]
         self.name+=".cropped"
 
-    """
-    def radial_distribution(self, origin=(0,0)):
-        dist = [ s.getradius(origin) for s in self.sources ]
-        return(dist)
-    """
-
     def __len__(self):
         return(self._data.shape[0])
 
@@ -52,6 +46,18 @@ class Catalog(object):
     def __setitem__(self, key, item):
         if(type(key)==int): self._data[key]=item
         else: self._data[:,self.indices[key]]=item
+    
+    def append(self, data, key="key"):
+        """
+        INPUT:  list of values [1x(len(catalog))]
+                key = indexing key if desired
+        FUNC:   combines input list into Catalog._data
+        """
+        if(len(data)!=len(self)): raise ValueError("Input list must be of shape (1,%d), recieved %s"%(len(self), np.shape(data)))
+        if(key in self.indices): raise ValueError("key='%s' exists in data set"%key)
+        self._data = np.append( self._data, np.empty((len(self),1)), axis=1)
+        self.indices[key] = len(self[0])-1
+        self[key] = data
 
     @classmethod
     def from_dict(cls, raw_dict):
@@ -82,6 +88,7 @@ class Catalog(object):
         return cls
 
     def mean(self, key='g'):
+        if(key not in self.indices): raise ValueError("key='%s' not in data set"%key)
         return(np.mean(self[key]))
 
     def to_dict(self):
@@ -95,23 +102,32 @@ class Catalog(object):
         if(filename==''): filename="%s/%s.pickle"%(Messier33.OUT, self.name)
         Messier33.io.serialise(filename, self.to_dict())
 
-    def rads_to_stdcoords(self, A=0, D=0):
+    def convert_to_stdcoords(self, A=0, D=0):
+        if(not A):A=Messier33.ra
+        if(not D):D=Messier33.dec
         if(self.units=="deg"):
-            self._data[:,0] = np.radians(self['ra'])
-            self._data[:,1] = np.radians(self['dec'])
+            self['ra'] = np.radians(self['ra'])
+            self['dec'] = np.radians(self['dec'])
             self.units="rads"
-        if(not A):A=Messier33.mean_coords.mean_RA
-        if(not D):D=Messier33.mean_coords.mean_DEC
         if(self.units=="rads"):
             #for now this overwrites the ra/dec column, can change this if needed
             xi = (np.cos(self['dec'])*np.sin(self['ra']-A))/( np.sin(D)*np.sin(self['dec'])+np.cos(D)*np.cos(self['dec'])*np.cos(self['ra']-A))
             eta= (np.cos(D)*np.sin(self['dec'])-np.sin(D)*np.cos(self['dec'])*np.cos(self['ra']-A))/(np.sin(D)*np.sin(self['dec'])+np.cos(D)*np.cos(self['dec'])*np.cos(self['ra']-A))
-            self._data[:,0] = xi
-            self._data[:,1] = eta
+            self['ra']=np.degrees(xi)
+            self['dec']=np.degrees(eta)
             self.units="stdcoord"
             self.indices['xi']=self.indices['ra']
             self.indices['eta']=self.indices['dec']
 
+    def deproject_radii(self):
+        #not sure best interface, should i add to _data, or create a new thing, or just return it
+        #Cioni09.3 - 2.3
+        Q = Messier33.PA - np.radians(90)
+        _x = self['xi']*np.cos(Q) + self['eta']*np.sin(Q)
+        _y = -self['xi']*np.sin(Q) + self['eta']*np.cos(Q)
+        _y /= Messier33.inclination
+        self.append(np.sqrt( _x**2.0 + _y**2.0) ,key="dist")
+        return(self['dist'])
 
 if __name__=="__main__":
     c=Catalog.from_pandas(filename="%s/pandas.test"%Messier33.DATA)
@@ -122,4 +138,5 @@ if __name__=="__main__":
     #c.export()
     #c=Catalog.from_serialised("%s/wfcam.test.pickle"%Messier33.OUT)
     #c.crop()
-    c.rads_to_stdcoords()
+    c.convert_to_stdcoords()
+    c.deproject_radii()

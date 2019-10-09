@@ -9,18 +9,20 @@ DATA	include/config.py	/^DATA=ROOT+"\/data\/test"$/;"	v
 Loading	src/loading.py	/^class Loading:$/;"	c
 Messier33Test	tests/test_messier33.py	/^class Messier33Test(unittest.TestCase):$/;"	c
 OUT	include/config.py	/^OUT=ROOT+"\/out"$/;"	v
+PA	include/m33.py	/^PA = 0$/;"	v
 ROOT	include/config.py	/^ROOT="\/home\/conor\/mphys\/m33"$/;"	v
 __call__	src/loading.py	/^    def __call__(self, i):$/;"	m	class:Loading	file:
 __getitem__	src/catalog.py	/^    def __getitem__(self, key):$/;"	m	class:Catalog	file:
-__init__	src/catalog.py	/^    def __init__(self, data=[], size=(0,0), style="null", name="null", indices=[]):$/;"	m	class:Catalog
+__init__	src/catalog.py	/^    def __init__(self, data=[], size=(0,0), style="null", name="null", indices=[], units="deg"):$/;"	m	class:Catalog
 __init__	src/loading.py	/^    def __init__(self, n_max, length=25, prefix="loading"):$/;"	m	class:Loading
 __len__	src/catalog.py	/^    def __len__(self):$/;"	m	class:Catalog	file:
-c	src/catalog.py	/^    c=Catalog.from_serialised("%s\/wfcam.test.pickle"%Messier33.OUT)$/;"	v
-c	src/catalog.py	/^    c=Catalog.from_wfcam(filename="%s\/wfcam.test"%Messier33.DATA)$/;"	v
+__setitem__	src/catalog.py	/^    def __setitem__(self, key, item):$/;"	m	class:Catalog	file:
+c	src/catalog.py	/^    c=Catalog.from_pandas(filename="%s\/pandas.test"%Messier33.DATA)$/;"	v	class:Catalog
 colour	src/catalog.py	/^    def colour(self, band1, band2):$/;"	m	class:Catalog
-convert_to_dict	include/m33.py	/^def convert_to_dict(obj):$/;"	f
+convert_to_stdcoords	src/catalog.py	/^    def convert_to_stdcoords(self, A=0, D=0):$/;"	m	class:Catalog
 crop	src/catalog.py	/^    def crop(self, removing=(1,0,-9,-8.-3)):$/;"	m	class:Catalog
-dict_to_obj	include/m33.py	/^def dict_to_obj(_dict):$/;"	f
+dec	include/m33.py	/^dec= np.radians(30.660222)$/;"	v
+deproject_radii	src/catalog.py	/^    def deproject_radii(self):$/;"	m	class:Catalog
 display	src/loading.py	/^    def display(self):$/;"	m	class:Loading
 dms_to_degrees	include/m33.py	/^def dms_to_degrees(d,m,s):$/;"	f
 export	src/catalog.py	/^    def export(self, filename=''):$/;"	m	class:Catalog
@@ -32,8 +34,13 @@ from_wfcam	src/catalog.py	/^    def from_wfcam(cls, filename):$/;"	m	class:Catal
 hms_to_degrees	include/m33.py	/^def hms_to_degrees(h,m,s):$/;"	f
 import_from_raw	src/fileio.py	/^def import_from_raw(filename, style="pandas"):$/;"	f
 import_from_serialised	src/fileio.py	/^def import_from_serialised(filename):$/;"	f
+inclination	include/m33.py	/^inclination = np.radians(53) $/;"	v
 l	src/loading.py	/^    l=Loading(100, 30)$/;"	v
+mean	src/catalog.py	/^    def mean(self, key='g'):$/;"	m	class:Catalog
+mean_DEC	docs/mean_coords.py	/^mean_DEC=0.53553458$/;"	v
+mean_RA	docs/mean_coords.py	/^mean_RA=0.40809864$/;"	v
 n_cols	src/fileio.py	/^n_cols = {"pandas_raw":18, "wfcam_raw":22, "pandas_reduced":8, "wfcam_reduced":11}$/;"	v
+ra	include/m33.py	/^ra = np.radians(23.462042)$/;"	v
 raw_dict	src/fileio.py	/^raw_dict = {"data":np.array,$/;"	v
 reduce_line_pandas	src/fileio.py	/^def reduce_line_pandas(line):$/;"	f
 reduce_line_wfcam	src/fileio.py	/^def reduce_line_wfcam(line):$/;"	f

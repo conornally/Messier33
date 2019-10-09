@@ -1,28 +1,12 @@
 import numpy as np
-import astropy.units as u
-from astropy.coordinates import SkyCoord
 
-gx,gy,g,dg,gcls=np.arange(5)+0
-ix,iy,i,di,icls=np.arange(5)+5
-Jx,Jy,J,dJ,Jcls=np.arange(5)+10
-Kx,Ky,K,dK,Kcls=np.arange(5)+15
-Hx,Hy,H,dH,Hcls=np.arange(5)+20
-
-def convert_to_dict(obj):
-    obj_dict={  "__class__":obj.__class__.__name__,
-                "__module__":obj.__module__}
-    obj_dict.update(obj.__dict__)
-    return(obj_dict)
-
-def dict_to_obj(_dict):
-    print(_dict)
-    if("__class__"not in _dict): return(_dict)
-    else:
-        class_name=_dict.pop("__class__")
-        module_name=_dict.pop("__module__")
-        module=__import__(module_name)
-        class_=getattr(module,class_name)
-        return(class_(**_dict))
+#https://ned.ipac.caltech.edu/byname?objname=m33&hconst=67.8&omegam=0.308&omegav=0.692&wmap=4&corr_z=1
+ra = np.radians(23.462042)
+dec= np.radians(30.660222)
+PA = 0
+inclination = np.radians(53) 
+a = 7.50E-02 ##dont really get this number
+b = 7.50E-02
 
 def hms_to_degrees(h,m,s):
     return((h*15.0)+(m/4.0)+(s/240.0))
