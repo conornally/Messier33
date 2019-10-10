@@ -13,10 +13,10 @@ class Catalog(object):
         for i,key in enumerate(indices):
             self.indices[key]=i
             if("cls" in key): self.bands.append(key[0])
-            
-    def colour(self, band1, band2):
-        return( self[band1]-self[band2] )
 
+    def colour(self, c1,c2):
+        return(self["%s-%s"%(c1,c2)])
+            
     def crop(self, removing=(1,0,-9,-8.-3)):
         """
         INPUT:  removing = source classes to be removed from catalog
@@ -40,7 +40,10 @@ class Catalog(object):
         return(self._data.shape[0])
 
     def __getitem__(self, key):
-        if(type(key)==int): return self._data[key]
+        if(type(key)==int or type(key)==slice): return self._data[key]
+        elif('-' in key):
+            a,b = key.split('-')
+            return(self[a]-self[b])
         else: return( self._data[:,self.indices[key]])
     
     def __setitem__(self, key, item):
@@ -140,3 +143,4 @@ if __name__=="__main__":
     #c.crop()
     c.convert_to_stdcoords()
     c.deproject_radii()
+    print(c["g-i"])

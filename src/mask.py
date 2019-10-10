@@ -1,4 +1,6 @@
 import numpy as np
+from shapely.geometry import Point, polygon
+from Messier33.src.loading import Loading
 
 class ParentMask(object):
     """
@@ -90,20 +92,13 @@ class Box(ParentMask):
         
         self.index=list( set(self.slices[0].index) & set(self.slices[1].index))
 
+class Polygon(ParentMask):
+    def __init__(self, bounds, keys, inverse=False):
+        super(Polygon, self).__init__(keys, inverse)
+        self.polygon=polygon.Polygon(bounds)
 
-        
-
-
-if __name__=="__main__":
-    import Messier33
-    c = Messier33.Catalog.from_serialised("%s/data/test/pandas.pickle"%Messier33.ROOT)
-    print(c['g'])
-
-    #mask = Cut(0, 'g', inverse=True)
-    mask = Slice( (10,20), 'g')
-    c = mask.apply_on(c)
-    print(c['g'])
-
-
-
-
+    def _crop(self, catalog):
+        l=Loading(len(catalog))
+        for i,(x,y) in enumerate(zip(catalog[self.key[0]], catalog[self.key[1]])):
+            if( self.polygon.contains(Point(x,y)) ):self.index.append(i)
+            l(i)
