@@ -1,6 +1,5 @@
 import numpy as np
-from shapely.geometry import Point, polygon
-from Messier33.src.loading import Loading
+import matplotlib.path as mpltpath
 
 class ParentMask(object):
     """
@@ -96,9 +95,8 @@ class Polygon(ParentMask):
     def __init__(self, bounds, keys, inverse=False):
         super(Polygon, self).__init__(keys, inverse)
         self.polygon=polygon.Polygon(bounds)
+        self.polygon = mpltpath.Path(bounds)
 
     def _crop(self, catalog):
-        l=Loading(len(catalog))
-        for i,(x,y) in enumerate(zip(catalog[self.key[0]], catalog[self.key[1]])):
-            if( self.polygon.contains(Point(x,y)) ):self.index.append(i)
-            l(i)
+        points = np.array([ catalog[self.key[0]], catalog[self.key[1]] ]).T
+        self.index = self.polygon.contains_points( points )
