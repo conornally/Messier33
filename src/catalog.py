@@ -40,11 +40,13 @@ class Catalog(object):
 
     def __getitem__(self, key):
         if(type(key)==int or type(key)==slice): return self._data[key]
-        if(type(key)==tuple): return([self[col] for col in key])
+        elif(type(key)==tuple): return([self[col] for col in key])
         elif('-' in key): #for doing colours
             a,b = key.split('-')
             return(self[a]-self[b])
-        else: return( self._data[:,self.indices[key]])
+        else: 
+            if(key not in self.indices): raise KeyError("key=%s not in indices"%key)
+            return( self._data[:,self.indices[key]])
     
     def __setitem__(self, key, item):
         if(type(key)==int): self._data[key]=item
@@ -57,7 +59,7 @@ class Catalog(object):
         FUNC:   combines input list into Catalog._data
         """
         if(len(data)!=len(self)): raise ValueError("Input list must be of shape (1,%d), recieved %s"%(len(self), np.shape(data)))
-        if(key in self.indices): raise ValueError("key='%s' exists in data set"%key)
+        if(key in self.indices): raise KeyError("key='%s' exists in data set"%key)
         self._data = np.append( self._data, np.empty((len(self),1)), axis=1)
         self.indices[key] = len(self[0])-1
         self[key] = data
@@ -91,7 +93,7 @@ class Catalog(object):
         return cls
 
     def mean(self, key='g'):
-        if(key not in self.indices): raise ValueError("key='%s' not in data set"%key)
+        if(key not in self.indices): raise KeyError("key='%s' not in data set"%key)
         return(np.mean(self[key]))
 
     def to_dict(self):
@@ -145,4 +147,5 @@ if __name__=="__main__":
     c.deproject_radii()
     print(c["xi-eta"])
     print(c[0:10:2])
+    print(c["g","g-i"])
 
