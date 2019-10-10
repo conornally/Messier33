@@ -14,8 +14,7 @@ class Catalog(object):
             self.indices[key]=i
             if("cls" in key): self.bands.append(key[0])
 
-    def colour(self, c1,c2):
-        return(self["%s-%s"%(c1,c2)])
+    def colour(self, c1,c2): return(self["%s-%s"%(c1,c2)])
             
     def crop(self, removing=(1,0,-9,-8.-3)):
         """
@@ -41,7 +40,8 @@ class Catalog(object):
 
     def __getitem__(self, key):
         if(type(key)==int or type(key)==slice): return self._data[key]
-        elif('-' in key):
+        if(type(key)==tuple): return([self[col] for col in key])
+        elif('-' in key): #for doing colours
             a,b = key.split('-')
             return(self[a]-self[b])
         else: return( self._data[:,self.indices[key]])
@@ -143,4 +143,6 @@ if __name__=="__main__":
     #c.crop()
     c.convert_to_stdcoords()
     c.deproject_radii()
-    print(c["g-i"])
+    print(c["xi-eta"])
+    print(c[0:10:2])
+
