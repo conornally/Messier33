@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.path as mpltpath
+import Messier33
 
 class ParentMask(object):
     """
@@ -16,19 +17,24 @@ class ParentMask(object):
         FUNC:   Usually not user accessed, will generate cropping index without applying the crop 
         """
 
-        if(type(self.key)!=list):
-            if(self.key not in catalog.indices): raise ValueError("key='%s' not in catalog"%self.key)
+        #if(type(self.key)!=list):
+            #if(self.key not in catalog.indices): raise ValueError("key='%s' not in catalog"%self.key)
         self._crop(catalog)
         if(self.inverse): self.index=self.invert_index(len(catalog))
 
-    def apply_on(self, catalog):
+    def apply_on(self, catalog, overwrite=True):
         """
         INPUT:  catalog on which to apply crop
         RETURNS: catalog with crop applied
         """
         self.generate_index(catalog)
-        catalog._data = catalog._data[self.index]
-        return(catalog)
+        if(overwrite): 
+            catalog._data = catalog._data[self.index]
+            return(catalog)
+        else:
+            c = Messier33.Catalog.copy(catalog)
+            c._data = catalog._data[self.index]
+            return(c)
 
     def invert_index(self, n):
         mask = set(range(n))-set(self.index)
@@ -94,9 +100,8 @@ class Box(ParentMask):
 class Polygon(ParentMask):
     def __init__(self, bounds, keys, inverse=False):
         super(Polygon, self).__init__(keys, inverse)
-        self.polygon=polygon.Polygon(bounds)
         self.polygon = mpltpath.Path(bounds)
 
     def _crop(self, catalog):
-        points = np.array([ catalog[self.key[0]], catalog[self.key[1]] ]).T
-        self.index = self.polygon.contains_points( points )
+        index = self.polygon.contains_points( catalog[self.key].T )
+        self.index = np.arange(len(catalog))[index]

@@ -40,7 +40,7 @@ class Catalog(object):
 
     def __getitem__(self, key):
         if(type(key)==int or type(key)==slice): return self._data[key]
-        elif(type(key)==tuple): return([self[col] for col in key])
+        elif(type(key)==tuple or type(key)==list): return(np.array([self[col] for col in key]))
         elif('-' in key): #for doing colours
             a,b = key.split('-')
             return(self[a]-self[b])
@@ -63,6 +63,12 @@ class Catalog(object):
         self._data = np.append( self._data, np.empty((len(self),1)), axis=1)
         self.indices[key] = len(self[0])-1
         self[key] = data
+
+    @classmethod
+    def copy(cls, other):
+        other_dict=other.to_dict()
+        cls = cls.from_dict(other_dict)
+        return(cls)
 
     @classmethod
     def from_dict(cls, raw_dict):
@@ -118,11 +124,13 @@ class Catalog(object):
             #for now this overwrites the ra/dec column, can change this if needed
             xi = (np.cos(self['dec'])*np.sin(self['ra']-A))/( np.sin(D)*np.sin(self['dec'])+np.cos(D)*np.cos(self['dec'])*np.cos(self['ra']-A))
             eta= (np.cos(D)*np.sin(self['dec'])-np.sin(D)*np.cos(self['dec'])*np.cos(self['ra']-A))/(np.sin(D)*np.sin(self['dec'])+np.cos(D)*np.cos(self['dec'])*np.cos(self['ra']-A))
-            self['ra']=np.degrees(xi)
-            self['dec']=np.degrees(eta)
+            #self['ra']=np.degrees(xi)
+            #self['dec']=np.degrees(eta)
             self.units="stdcoord"
-            self.indices['xi']=self.indices['ra']
-            self.indices['eta']=self.indices['dec']
+            #self.indices['xi']=self.indices['ra']
+            #self.indices['eta']=self.indices['dec']
+            self.append(np.degrees(xi), "xi")
+            self.append(np.degrees(eta), "eta")
 
     def deproject_radii(self):
         #not sure best interface, should i add to _data, or create a new thing, or just return it
@@ -148,4 +156,6 @@ if __name__=="__main__":
     print(c["xi-eta"])
     print(c[0:10:2])
     print(c["g","g-i"])
+    print(c[["g","g-i"]])
+    print(c["eta"])
 
