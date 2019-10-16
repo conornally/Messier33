@@ -69,6 +69,9 @@ class Catalog(object):
         self.indices[key] = len(self[0])-1
         self[key] = data
 
+    def replace(self, data, replace_key, key=replace_key):
+        pass
+
     @classmethod
     def copy(cls, other):
         other_dict=other.to_dict()
@@ -143,11 +146,20 @@ class Catalog(object):
         self.append(np.sqrt( _x**2.0 + _y**2.0) ,key="dist")
         return(self['dist'])
 
-    def tmp_dust_correct(self):
-        coord = SkyCoord(self['ra'], self['dec'], unit=u.deg)
-        ebv = SFDQuery()(coord)
-        self.append( self['g']-(self.config.g_dust_coeff*ebv), "go")
-        self.append( self['i']-(self.config.i_dust_coeff*ebv), "io")
+    def correct_dust(self, overwrite=True):
+        """
+        INPUT:  overwrite (True) filter mag column with corrected magnitudes
+        FUNC:   using SFDQuery finds E(B-V) for each ra,dec in catalog and 
+                corrects the filter magnitudes using this value
+        """
+        coords = SkyCoord(self['ra'], self['dec'], unit=u.deg)
+        ebv = SFDQuery()(coords)
+        
+        go = self['g'] - (self.config.g_dust_coeff*ebv)
+        io = self['i'] - (self.config.i_dust_coeff*ebv)
+        if(overwite):
+            self['g']=go
+            self['i']=io
 
 
 

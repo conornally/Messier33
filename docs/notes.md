@@ -16,3 +16,11 @@ inclusion of scripts into API??
 >	i could put the colour_mag etc. and catalogconverter scripts in here?
 
 pickle still seems to have trouble with loading the bigger files
+
+## current task
+
+add Catalog.replace
+[[add Catalog.insert]]
+incorporate to Catalog.dust_correction
+
+
