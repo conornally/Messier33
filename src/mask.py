@@ -22,10 +22,11 @@ class ParentMask(object):
         self._crop(catalog)
         if(self.inverse): self.index=self.invert_index(len(catalog))
 
-    def apply_on(self, catalog, overwrite=True):
+    def apply_on(self, catalog, overwrite=False):
         """
         INPUT:  catalog on which to apply crop
-        RETURNS: catalog with crop applied
+                overwrite (False) will make copy of catalog if set to False
+        RETURNS: copy of catalog with crop applied
         """
         self.generate_index(catalog)
         if(overwrite): 
@@ -43,6 +44,9 @@ class ParentMask(object):
     def __add__(self, mask):
         self.index = list( set(self.index)&set(mask.index))
         return(self)
+
+    def plot(self, ax, **kwargs):
+        pass
 
 class Bool(ParentMask):
     def __init__(self, value, key, inverse=False):
@@ -74,6 +78,10 @@ class Cut(ParentMask):
         for i,value in enumerate(catalog[self.key]):
             if(value>self.threshold): self.index.append(i)
 
+    def plot(self, ax, axis=0, **kwargs):
+        if(axis==0): ax.axvline(self.threshold, **kwargs)
+        else: ax.axhline(self.threshold, **kwargs)
+
 class Slice(ParentMask):
     def __init__(self, bounds, key, inverse=False):
         if( not (type(bounds)==list or type(bounds)==set) and len(bounds)!=2): raise ValueError("bounds must be (list,set) or dimensions (1,2)")
@@ -83,6 +91,12 @@ class Slice(ParentMask):
     def _crop(self, catalog):
         for i,value in enumerate(catalog[self.key]):
             if(self.bounds[0]<value and value<self.bounds[1]): self.index.append(i)
+
+    def plot(self, ax, axis=0, **kwargs):
+        axline=ax.axvline if(axis==0) else ax.axhline
+        axline(self.bounds[0], **kwargs)
+        axline(self.bounds[1], **kwargs)
+        
 
 class Box(ParentMask):
     def __init__(self, bounds, keys, inverse=False):
@@ -94,14 +108,34 @@ class Box(ParentMask):
     def _crop(self, catalog):
         for mask_slice in self.slices:
             mask_slice.generate_index(catalog)
-        
         self.index=list( set(self.slices[0].index) & set(self.slices[1].index))
+
+    def plot(self, ax, axis=0, **kwargs):
+        c=self.bounds #lazy bandit..
+        x = 0 if(axis==0) else 1
+        y = 1 if(axis==0) else 0
+        corners = np.array([ (c[0],c[2]), (c[1],c[2]), (c[1], c[3]), (c[0], c[3]), (c[0], c[2])])
+        ax.plot(corners[:,x], corners[:,y], **kwargs)
 
 class Polygon(ParentMask):
     def __init__(self, bounds, keys, inverse=False):
         super(Polygon, self).__init__(keys, inverse)
         self.polygon = mpltpath.Path(bounds)
+        self.bounds=np.array(bounds)
 
     def _crop(self, catalog):
         index = self.polygon.contains_points( catalog[self.key].T )
         self.index = np.arange(len(catalog))[index]
+
+    def plot(self, ax, axis=0, **kwargs):
+        x = 0 if(axis==0) else 1
+        y = 1 if(axis==0) else 0
+        
+        newshape = self.bounds.shape+np.array([1,0])
+        c = np.append(self.bounds, self.bounds[0]).reshape(newshape)
+        ax.plot(c[:,x], c[:,y], **kwargs)
+
+
+if(__name__=="__main__"):
+    mask = Messier33.mask.Polygon( [(0,0), (10,0), (5,5)], ["g","i"])
+    mask.plot(None,0)

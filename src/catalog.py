@@ -1,5 +1,8 @@
 import numpy as np
 import Messier33
+from astropy.coordinates import SkyCoord
+import astropy.units as u
+from dustmaps.sfd import SFDQuery
 
 class Catalog(object):
     def __init__(self, data=[], size=(0,0), style="null", name="null", indices=[], units="deg"):
@@ -13,6 +16,7 @@ class Catalog(object):
         for i,key in enumerate(indices):
             self.indices[key]=i
             if("cls" in key): self.bands.append(key[0])
+        if(style=="pandas"): self.config=Messier33.pandas_config
 
     def colour(self, c1,c2): return(self["%s-%s"%(c1,c2)])
             
@@ -72,7 +76,6 @@ class Catalog(object):
 
     @classmethod
     def from_dict(cls, raw_dict):
-        #print(raw_dict)
         cls = cls(  data=raw_dict["data"],
                     style=raw_dict["style"],
                     size=raw_dict["size"], 
@@ -124,11 +127,7 @@ class Catalog(object):
             #for now this overwrites the ra/dec column, can change this if needed
             xi = (np.cos(self['dec'])*np.sin(self['ra']-A))/( np.sin(D)*np.sin(self['dec'])+np.cos(D)*np.cos(self['dec'])*np.cos(self['ra']-A))
             eta= (np.cos(D)*np.sin(self['dec'])-np.sin(D)*np.cos(self['dec'])*np.cos(self['ra']-A))/(np.sin(D)*np.sin(self['dec'])+np.cos(D)*np.cos(self['dec'])*np.cos(self['ra']-A))
-            #self['ra']=np.degrees(xi)
-            #self['dec']=np.degrees(eta)
             self.units="stdcoord"
-            #self.indices['xi']=self.indices['ra']
-            #self.indices['eta']=self.indices['dec']
             self.append(np.degrees(xi), "xi")
             self.append(np.degrees(eta), "eta")
 
@@ -142,6 +141,17 @@ class Catalog(object):
         self.append(np.sqrt( _x**2.0 + _y**2.0) ,key="dist")
         return(self['dist'])
 
+    def tmp_dust_correct(self):
+        coord = SkyCoord(self['ra'], self['dec'], unit=u.deg)
+        ebv = SFDQuery()(coord)
+        self.append( self['g']-(self.config.g_dust_coeff*ebv), "go")
+        self.append( self['i']-(self.config.i_dust_coeff*ebv), "io")
+
+
+
+
+
+
 if __name__=="__main__":
     c=Catalog.from_pandas(filename="%s/pandas.test"%Messier33.DATA)
     #c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%Messier33.DATA)
@@ -153,9 +163,6 @@ if __name__=="__main__":
     #c.crop()
     c.convert_to_stdcoords()
     c.deproject_radii()
-    print(c["xi-eta"])
-    print(c[0:10:2])
-    print(c["g","g-i"])
-    print(c[["g","g-i"]])
-    print(c["eta"])
+    c.tmp_dust_correct()
+    print(c.indices)
 
