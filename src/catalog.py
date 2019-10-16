@@ -5,7 +5,7 @@ import astropy.units as u
 from dustmaps.sfd import SFDQuery
 
 class Catalog(object):
-    def __init__(self, data=[], size=(0,0), style="null", name="null", indices=[], units="deg"):
+    def __init__(self, data=[], size=(0,0), style="null", name="null", indices={}, units="deg"):
         self._data = data
         self.style=style
         self.name=name
@@ -13,9 +13,10 @@ class Catalog(object):
         self.indices={}
         self.bands=[]
         self.units=units
-        for i,key in enumerate(indices):
-            self.indices[key]=i
-            if("cls" in key): self.bands.append(key[0])
+        #for i,key in enumerate(indices):
+            #self.indices[key]=i
+            #if("cls" in key): self.bands.append(key[0])
+        self.indices = indices
         if(style=="pandas"): self.config=Messier33.pandas_config
 
     def colour(self, c1,c2): return(self["%s-%s"%(c1,c2)])
@@ -109,7 +110,8 @@ class Catalog(object):
         return({"data":self._data,
                 "style":self.style,
                 "size":self.size,
-                "indices":list(self.indices.keys()),
+                #"indices":list(self.indices.keys()),
+                "indices":self.indices,
                 "units":self.units})
 
     def export(self, filename=''):

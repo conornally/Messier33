@@ -14,7 +14,7 @@ from Messier33.src.loading import Loading
 raw_dict = {"data":np.array,
             "style":"pandas",
             "size":(0,0),
-            "indices":[] }
+            "indices":{} }
 
 n_cols = {"pandas_raw":18, "wfcam_raw":22, "pandas_reduced":8, "wfcam_reduced":11}
 
@@ -74,10 +74,10 @@ def import_from_raw(filename, style="pandas"):
             load(i)
             if(style=="pandas"):
                 data[i] = reduce_line_pandas(line)
-                indices=["ra","dec","g","dg","gcls","i","di","icls"]
+                indices=enum(["ra","dec","g","dg","gcls","i","di","icls"])
             if(style=="wfcam"):
                 data[i] = reduce_line_wfcam(line)
-                indices=["ra","dec","J","dJ","Jcls","H","dH","Hcls", "K", "dK", "Kcls"]
+                indices=enum(["ra","dec","J","dJ","Jcls","H","dH","Hcls", "K", "dK", "Kcls"])
             data[i,0:2] = np.radians(data[i,0:2])
     return( {"data":data, "style":style, "size":_size, "indices":indices, "units":"rads"})
 
@@ -95,8 +95,15 @@ def serialise(filename, catalog_dict={}):
     with open(filename, "wb") as f:
         pickle.dump(catalog_dict, f)
 
+def enum(lst):
+    outdict = {}
+    for i,key in enumerate(lst):
+        outdict[key]=i
+    return outdict
+
 if __name__=="__main__":
     import Messier33
     x=import_from_raw(Messier33.DATA+"/wfcam.test", "wfcam")
     x.pop('data')
     print(x)
+    
