@@ -57,11 +57,12 @@ class Bool(ParentMask):
                 inverse = True will DISCARD any catalog line matching value
         """
         super(Bool, self).__init__(key,inverse)
+        if(type(value)!=list): value=list(value)
         self.value=value
 
     def _crop(self, catalog):
         for i,value in enumerate(catalog[self.key]):
-            if(value==self.value): self.index.append(i)
+            if(value in self.value): self.index.append(i)
 
 class Cut(ParentMask):
     def __init__(self, threshold, key, inverse=False):
@@ -137,5 +138,5 @@ class Polygon(ParentMask):
 
 
 if(__name__=="__main__"):
-    mask = Messier33.mask.Polygon( [(0,0), (10,0), (5,5)], ["g","i"])
-    mask.plot(None,0)
+    mask = Messier33.mask.Bool([0,1], 'gcls')
+
