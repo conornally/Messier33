@@ -19,8 +19,7 @@ pickle still seems to have trouble with loading the bigger files
 
 ## current task
 
-add Catalog.replace
-[[add Catalog.insert]]
-incorporate to Catalog.dust_correction
+[x]	add Catalog.replace
+[x]	incorporate to Catalog.dust_correction
 
 

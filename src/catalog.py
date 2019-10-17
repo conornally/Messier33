@@ -21,25 +21,6 @@ class Catalog(object):
 
     def colour(self, c1,c2): return(self["%s-%s"%(c1,c2)])
             
-    def crop(self, removing=(1,0,-9,-8.-3)):
-        """
-        INPUT:  removing = source classes to be removed from catalog
-                -1  stellar
-                -2  probably stellar
-                -3  compact but non-stellar
-                -8  poor match ie. not within 1 arcsec but within 2.5 arcsec
-                -9  saturated
-                 0  noise-like
-                 1  non-stellar
-        FUNC:   crops "removing" list out of catalog
-        """
-        mask = ([True]*len(self))
-        for band in self.bands:
-            for cls_crop in removing:
-                mask*= (self["%scls"%band]!=cls_crop)
-        self._data = self._data[mask]
-        self.name+=".cropped"
-
     def __len__(self):
         return(self._data.shape[0])
 
@@ -69,8 +50,15 @@ class Catalog(object):
         self.indices[key] = len(self[0])-1
         self[key] = data
 
-    def replace(self, data, replace_key, key=replace_key):
-        pass
+    def replace(self, data, key, rename_key=""):
+        """
+        INPUT:  list of values as column
+                key = key in catalog to replace
+        """
+        if(len(data)!=len(self)): raise ValueError("Input list must be of shape (1,%d), recieved %s"%(len(self), np.shape(data)))
+        if(key not in self.indices): raise KeyError("key='%s' does not exist in data set"%key)
+        self[key] = data
+        if(rename_key): self.indices[rename_key] = self.indices.pop(key)
 
     @classmethod
     def copy(cls, other):
@@ -152,14 +140,21 @@ class Catalog(object):
         FUNC:   using SFDQuery finds E(B-V) for each ra,dec in catalog and 
                 corrects the filter magnitudes using this value
         """
+        if(self.style=="wfcam"): raise NotImplementedError("wfcam dust correction not implenemted yet")
         coords = SkyCoord(self['ra'], self['dec'], unit=u.deg)
         ebv = SFDQuery()(coords)
         
         go = self['g'] - (self.config.g_dust_coeff*ebv)
         io = self['i'] - (self.config.i_dust_coeff*ebv)
-        if(overwite):
-            self['g']=go
-            self['i']=io
+
+        if(overwrite):
+            self.replace(go, "g")
+            self.replace(io, "i")
+
+        else:
+            self.append(go, "go")
+            self.append(io, "io")
+        
 
 
 
@@ -167,16 +162,16 @@ class Catalog(object):
 
 
 if __name__=="__main__":
-    c=Catalog.from_pandas(filename="%s/pandas.test"%Messier33.DATA)
+    #c=Catalog.from_pandas(filename="%s/pandas.test"%Messier33.DATA)
     #c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%Messier33.DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%Messier33.DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/../initial/pandas_m33_2009.unique"%Messier33.DATA)
-    #c=Catalog.from_wfcam(filename="%s/wfcam.test"%Messier33.DATA)
+    c=Catalog.from_wfcam(filename="%s/wfcam.test"%Messier33.DATA)
     #c.export()
     #c=Catalog.from_serialised("%s/wfcam.test.pickle"%Messier33.OUT)
     #c.crop()
     c.convert_to_stdcoords()
     c.deproject_radii()
-    c.tmp_dust_correct()
+    c.correct_dust(overwrite=False)
     print(c.indices)
 
