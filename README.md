@@ -23,4 +23,6 @@ cat_2 = mask2.apply_on(catalog) ##VERIFY this creates a copy?? i dont think it d
 catalog.export("out.pickle")
 catalog = Messier33.Catalog.from_serialised("out.pickle")
 
+print(len(catalog))
+
 ```
