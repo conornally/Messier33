@@ -21,5 +21,5 @@ pickle still seems to have trouble with loading the bigger files
 
 [x]	add Catalog.replace
 [x]	incorporate to Catalog.dust_correction
-
+[]	create initial stellar population type polygons
 

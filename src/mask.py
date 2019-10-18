@@ -136,7 +136,19 @@ class Polygon(ParentMask):
         c = np.append(self.bounds, self.bounds[0]).reshape(newshape)
         ax.plot(c[:,x], c[:,y], **kwargs)
 
+class Preset(Polygon):
+    def __init__(self, filename="%s/include/stype_masks/test.mask"%Messier33.HOME):
+        with open(filename, 'r') as raw:
+            line = raw.readline().strip("\n").split(';')
+        self.name=line[0]
+        keys=line[1:3]
+        points=  line[3:]
+        arr_points = np.array(points, dtype=float).reshape((int(len(points)/2),2))
+        super(Preset,self).__init__(arr_points, keys)
+
+    def plot(self, ax, axis=0, **kwargs):
+        super().plot(ax,axis=axis, label=self.name, **kwargs)
+
 
 if(__name__=="__main__"):
-    mask = Messier33.mask.Bool([0,1], 'gcls')
-
+    mask = Preset()

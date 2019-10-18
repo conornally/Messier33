@@ -13,16 +13,21 @@ class Catalog(object):
         self.indices={}
         self.bands=[]
         self.units=units
-        #for i,key in enumerate(indices):
-            #self.indices[key]=i
-            #if("cls" in key): self.bands.append(key[0])
         self.indices = indices
+        for key in indices.keys(): 
+            if("cls" in key): self.bands.append(key[0])
         if(style=="pandas"): self.config=Messier33.pandas_config
 
     def colour(self, c1,c2): return(self["%s-%s"%(c1,c2)])
             
     def __len__(self):
         return(self._data.shape[0])
+
+    def remove_nonstellar(self):
+        for band in self.bands:
+            mask = Messier33.mask.Bool([-1,-2], "%scls"%band)
+            self = mask.apply_on(self, overwrite=True)
+
 
     def __getitem__(self, key):
         if(type(key)==int or type(key)==slice): return self._data[key]
@@ -146,11 +151,11 @@ class Catalog(object):
         
         go = self['g'] - (self.config.g_dust_coeff*ebv)
         io = self['i'] - (self.config.i_dust_coeff*ebv)
-
         if(overwrite):
             self.replace(go, "g")
             self.replace(io, "i")
-
+            self.indices["go"]=self.indices["g"]
+            self.indices["io"]=self.indices["i"]
         else:
             self.append(go, "go")
             self.append(io, "io")
