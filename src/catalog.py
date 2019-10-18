@@ -5,7 +5,7 @@ import astropy.units as u
 from dustmaps.sfd import SFDQuery
 
 class Catalog(object):
-    def __init__(self, data=[], size=(0,0), style="null", name="null", indices={}, units="deg"):
+    def __init__(self, data=[], size=(0,0), style="null", name="null", indices={}, units="deg", history=[]):
         self._data = data
         self.style=style
         self.name=name
@@ -17,16 +17,17 @@ class Catalog(object):
         for key in indices.keys(): 
             if("cls" in key): self.bands.append(key[0])
         if(style=="pandas"): self.config=Messier33.pandas_config
+        self.history=history
 
-    def colour(self, c1,c2): return(self["%s-%s"%(c1,c2)])
-            
     def __len__(self):
         return(self._data.shape[0])
 
     def remove_nonstellar(self):
+        Messier33.info("*Removing non-stellar sources from catalog\n")
         for band in self.bands:
             mask = Messier33.mask.Bool([-1,-2], "%scls"%band)
             self = mask.apply_on(self, overwrite=True)
+        self.history.append("Removed any non-stellar sources from catalog")
 
 
     def __getitem__(self, key):
@@ -54,6 +55,7 @@ class Catalog(object):
         self._data = np.append( self._data, np.empty((len(self),1)), axis=1)
         self.indices[key] = len(self[0])-1
         self[key] = data
+        self.history.append("Appended %s column in position %d"%(key,self.indices[key]))
 
     def replace(self, data, key, rename_key=""):
         """
@@ -64,6 +66,7 @@ class Catalog(object):
         if(key not in self.indices): raise KeyError("key='%s' does not exist in data set"%key)
         self[key] = data
         if(rename_key): self.indices[rename_key] = self.indices.pop(key)
+        self.history.append("Replaced %s column in position %d"%(key,self.indices[key]))
 
     @classmethod
     def copy(cls, other):
@@ -77,7 +80,8 @@ class Catalog(object):
                     style=raw_dict["style"],
                     size=raw_dict["size"], 
                     indices=raw_dict["indices"], 
-                    units=raw_dict["units"])
+                    units=raw_dict["units"],
+                    history=raw_dict["history"])
         return cls
 
     @classmethod
@@ -106,15 +110,16 @@ class Catalog(object):
         return({"data":self._data,
                 "style":self.style,
                 "size":self.size,
-                #"indices":list(self.indices.keys()),
                 "indices":self.indices,
-                "units":self.units})
+                "units":self.units,
+                "history":self.history})
 
     def export(self, filename=''):
         if(filename==''): filename="%s/%s.pickle"%(Messier33.OUT, self.name)
         Messier33.io.serialise(filename, self.to_dict())
 
     def convert_to_stdcoords(self, A=0, D=0):
+        Messier33.info("*Converting RADEC to Standard Coordinates\n")
         if(not A):A=Messier33.ra
         if(not D):D=Messier33.dec
         if(self.units=="deg"):
@@ -128,15 +133,18 @@ class Catalog(object):
             self.units="stdcoord"
             self.append(np.degrees(xi), "xi")
             self.append(np.degrees(eta), "eta")
+        self.history.append("Converted RADEC to STDCoordinates")
 
     def deproject_radii(self):
         #not sure best interface, should i add to _data, or create a new thing, or just return it
         #Cioni09.3 - 2.3
+        Messier33.info("*Deprojecting radii\n")
         Q = Messier33.PA - np.radians(90)
         _x = self['xi']*np.cos(Q) + self['eta']*np.sin(Q)
         _y = -self['xi']*np.sin(Q) + self['eta']*np.cos(Q)
         _y /= Messier33.inclination
         self.append(np.sqrt( _x**2.0 + _y**2.0) ,key="dist")
+        self.history.append("Deprojected Radii from galactic centre")
         return(self['dist'])
 
     def correct_dust(self, overwrite=True):
@@ -145,6 +153,7 @@ class Catalog(object):
         FUNC:   using SFDQuery finds E(B-V) for each ra,dec in catalog and 
                 corrects the filter magnitudes using this value
         """
+        Messier33.info("*Correcting Dust Extinction\n")
         if(self.style=="wfcam"): raise NotImplementedError("wfcam dust correction not implenemted yet")
         coords = SkyCoord(self['ra'], self['dec'], unit=u.deg)
         ebv = SFDQuery()(coords)
@@ -159,24 +168,25 @@ class Catalog(object):
         else:
             self.append(go, "go")
             self.append(io, "io")
-        
-
-
-
-
-
+        self.history.append("Extinction Correction in bands g,i")
 
 if __name__=="__main__":
-    #c=Catalog.from_pandas(filename="%s/pandas.test"%Messier33.DATA)
-    #c=Catalog.from_pandas(filename="%s/../initial/pandas_m33_2009.unique"%Messier33.DATA)
+    Messier33.log_level(2)
+    c=Catalog.from_pandas(filename="%s/test/pandas.test"%Messier33.DATA)
+    #c=Catalog.from_pandas(filename="%s/initial/pandas_m33_2009.unique"%Messier33.DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%Messier33.DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/../initial/pandas_m33_2009.unique"%Messier33.DATA)
-    c=Catalog.from_wfcam(filename="%s/wfcam.test"%Messier33.DATA)
+    #c=Catalog.from_wfcam(filename="%s/wfcam.test"%Messier33.DATA)
     #c.export()
     #c=Catalog.from_serialised("%s/wfcam.test.pickle"%Messier33.OUT)
     #c.crop()
+    #c.convert_to_stdcoords()
+    #c.deproject_radii()
+    #c.correct_dust(overwrite=False)
+
+    c.remove_nonstellar()
     c.convert_to_stdcoords()
     c.deproject_radii()
-    c.correct_dust(overwrite=False)
-    print(c.indices)
+    c.correct_dust()
+    for h in c.history: print(h)
 

@@ -14,7 +14,8 @@ from Messier33.src.loading import Loading
 raw_dict = {"data":np.array,
             "style":"pandas",
             "size":(0,0),
-            "indices":{} }
+            "indices":{},
+            "history":[]}
 
 n_cols = {"pandas_raw":18, "wfcam_raw":22, "pandas_reduced":8, "wfcam_reduced":11}
 
@@ -79,7 +80,7 @@ def import_from_raw(filename, style="pandas"):
                 data[i] = reduce_line_wfcam(line)
                 indices=enum(["ra","dec","J","dJ","Jcls","H","dH","Hcls", "K", "dK", "Kcls"])
             data[i,0:2] = np.radians(data[i,0:2])
-    return( {"data":data, "style":style, "size":_size, "indices":indices, "units":"rads"})
+    return( {"data":data, "style":style, "size":_size, "indices":indices, "units":"rads", "history":[]})
 
 def filelength(filename):
     """
@@ -103,7 +104,6 @@ def enum(lst):
 
 if __name__=="__main__":
     import Messier33
-    x=import_from_raw(Messier33.DATA+"/wfcam.test", "wfcam")
-    x.pop('data')
+    x=import_from_raw(Messier33.DATA+"/initial/pandas_m33_2009.unique", "pandas")
     print(x)
     
