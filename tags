@@ -8,46 +8,56 @@ Bool	src/mask.py	/^class Bool(ParentMask):$/;"	c
 Box	src/mask.py	/^class Box(ParentMask):$/;"	c
 Catalog	src/catalog.py	/^class Catalog(object):$/;"	c
 Cut	src/mask.py	/^class Cut(ParentMask):$/;"	c
-DATA	include/config.py	/^DATA=ROOT+"\/data\/test"$/;"	v
+DATA	include/config.py	/^DATA=ROOT+"\/data"$/;"	v
+HOME	include/config.py	/^HOME="\/home\/conor\/mphys\/m33\/code" # codebase location$/;"	v
 Loading	src/loading.py	/^class Loading:$/;"	c
+Logging	src/log.py	/^class Logging:$/;"	c
 Messier33Test	tests/test_messier33.py	/^class Messier33Test(unittest.TestCase):$/;"	c
 OUT	include/config.py	/^OUT=ROOT+"\/out"$/;"	v
-PA	include/m33.py	/^PA = np.radians(-35) ##tmp$/;"	v
+PA	include/m33.py	/^PA = np.radians(-35) ## [[for now??]] G.Lewis, R.Braun, A.McConnachie -12$/;"	v
 ParentMask	src/mask.py	/^class ParentMask(object):$/;"	c
 Polygon	src/mask.py	/^class Polygon(ParentMask):$/;"	c
+Preset	src/mask.py	/^class Preset(Polygon):$/;"	c
 ROOT	include/config.py	/^ROOT="\/home\/conor\/mphys\/m33"$/;"	v
 Slice	src/mask.py	/^class Slice(ParentMask):$/;"	c
 __add__	src/mask.py	/^    def __add__(self, mask):$/;"	m	class:ParentMask	file:
 __call__	src/loading.py	/^    def __call__(self, i):$/;"	m	class:Loading	file:
 __getitem__	src/catalog.py	/^    def __getitem__(self, key):$/;"	m	class:Catalog	file:
-__init__	src/catalog.py	/^    def __init__(self, data=[], size=(0,0), style="null", name="null", indices=[], units="deg"):$/;"	m	class:Catalog
+__init__	src/catalog.py	/^    def __init__(self, data=[], size=(0,0), style="null", name="null", indices={}, units="deg", history=[]):$/;"	m	class:Catalog
 __init__	src/loading.py	/^    def __init__(self, n_max, length=25, prefix="loading"):$/;"	m	class:Loading
+__init__	src/log.py	/^    def __init__(self, level=0):$/;"	m	class:Logging
 __init__	src/mask.py	/^    def __init__(self, bounds, key, inverse=False):$/;"	m	class:Slice
 __init__	src/mask.py	/^    def __init__(self, bounds, keys, inverse=False):$/;"	m	class:Box
 __init__	src/mask.py	/^    def __init__(self, bounds, keys, inverse=False):$/;"	m	class:Polygon
+__init__	src/mask.py	/^    def __init__(self, filename="%s\/include\/stype_masks\/test.mask"%Messier33.HOME):$/;"	m	class:Preset
 __init__	src/mask.py	/^    def __init__(self, key, inverse=False):$/;"	m	class:ParentMask
 __init__	src/mask.py	/^    def __init__(self, threshold, key, inverse=False):$/;"	m	class:Cut
 __init__	src/mask.py	/^    def __init__(self, value, key, inverse=False):$/;"	m	class:Bool
 __len__	src/catalog.py	/^    def __len__(self):$/;"	m	class:Catalog	file:
+__repr__	src/log.py	/^    def __repr__(self):$/;"	m	class:Logging	file:
 __setitem__	src/catalog.py	/^    def __setitem__(self, key, item):$/;"	m	class:Catalog	file:
 _crop	src/mask.py	/^    def _crop(self, catalog):$/;"	m	class:Bool
 _crop	src/mask.py	/^    def _crop(self, catalog):$/;"	m	class:Box
 _crop	src/mask.py	/^    def _crop(self, catalog):$/;"	m	class:Cut
 _crop	src/mask.py	/^    def _crop(self, catalog):$/;"	m	class:Polygon
 _crop	src/mask.py	/^    def _crop(self, catalog):$/;"	m	class:Slice
+_log	src/log.py	/^    def _log(self, message, level):$/;"	m	class:Logging
 a	include/m33.py	/^a = 7.50E-02 ##dont really get this number$/;"	v
 append	src/catalog.py	/^    def append(self, data, key="key"):$/;"	m	class:Catalog
 apply_on	src/mask.py	/^    def apply_on(self, catalog, overwrite=False):$/;"	m	class:ParentMask
 b	include/m33.py	/^b = 7.50E-02$/;"	v
-c	src/catalog.py	/^    c=Catalog.from_pandas(filename="%s\/pandas.test"%Messier33.DATA)$/;"	v	class:Catalog
-colour	src/catalog.py	/^    def colour(self, c1,c2): return(self["%s-%s"%(c1,c2)])$/;"	m	class:Catalog
+bands	src/catalog.py	/^    def bands(self):$/;"	m	class:Catalog
+c	src/catalog.py	/^    c=Catalog.from_pandas(filename="%s\/test\/pandas.test"%Messier33.DATA)$/;"	v	class:Catalog
 convert_to_stdcoords	src/catalog.py	/^    def convert_to_stdcoords(self, A=0, D=0):$/;"	m	class:Catalog
 copy	src/catalog.py	/^    def copy(cls, other):$/;"	m	class:Catalog
-crop	src/catalog.py	/^    def crop(self, removing=(1,0,-9,-8.-3)):$/;"	m	class:Catalog
+correct_dust	src/catalog.py	/^    def correct_dust(self, overwrite=True):$/;"	m	class:Catalog
+debug	__init__.py	/^def debug(message): log.debug(message)$/;"	f
+debug	src/log.py	/^    def debug(self, message):$/;"	m	class:Logging
 dec	include/m33.py	/^dec= np.radians(30.660222)$/;"	v
 deproject_radii	src/catalog.py	/^    def deproject_radii(self):$/;"	m	class:Catalog
 display	src/loading.py	/^    def display(self):$/;"	m	class:Loading
 dms_to_degrees	include/m33.py	/^def dms_to_degrees(d,m,s):$/;"	f
+enum	src/fileio.py	/^def enum(lst):$/;"	f
 export	src/catalog.py	/^    def export(self, filename=''):$/;"	m	class:Catalog
 filelength	src/fileio.py	/^def filelength(filename):$/;"	f
 from_dict	src/catalog.py	/^    def from_dict(cls, raw_dict):$/;"	m	class:Catalog
@@ -61,26 +71,37 @@ i_dust_coeff	include/pandas_config.py	/^i_dust_coeff = 2.086 # McConnachi10$/;"	
 import_from_raw	src/fileio.py	/^def import_from_raw(filename, style="pandas"):$/;"	f
 import_from_serialised	src/fileio.py	/^def import_from_serialised(filename):$/;"	f
 inclination	include/m33.py	/^inclination = np.radians(53) $/;"	v
+info	__init__.py	/^def info(message): log.info(message)$/;"	f
+info	src/log.py	/^    def info(self, message):$/;"	m	class:Logging
 invert_index	src/mask.py	/^    def invert_index(self, n):$/;"	m	class:ParentMask
 l	src/loading.py	/^    l=Loading(100, 30)$/;"	v
-mask	src/mask.py	/^    mask = Messier33.mask.Polygon( [(0,0), (10,0), (5,5)], ["g","i"])$/;"	v	class:Polygon
+l	src/log.py	/^    l = Logging(0)$/;"	v	class:Logging
+log	__init__.py	/^log = Logging(2)$/;"	v
+log_level	__init__.py	/^def log_level(level): log.set_level(level)$/;"	f
+mask	src/mask.py	/^    mask = Preset()$/;"	v
 mean	src/catalog.py	/^    def mean(self, key='g'):$/;"	m	class:Catalog
 n_cols	src/fileio.py	/^n_cols = {"pandas_raw":18, "wfcam_raw":22, "pandas_reduced":8, "wfcam_reduced":11}$/;"	v
 plot	src/mask.py	/^    def plot(self, ax, **kwargs):$/;"	m	class:ParentMask
 plot	src/mask.py	/^    def plot(self, ax, axis=0, **kwargs):$/;"	m	class:Box
 plot	src/mask.py	/^    def plot(self, ax, axis=0, **kwargs):$/;"	m	class:Cut
 plot	src/mask.py	/^    def plot(self, ax, axis=0, **kwargs):$/;"	m	class:Polygon
+plot	src/mask.py	/^    def plot(self, ax, axis=0, **kwargs):$/;"	m	class:Preset
 plot	src/mask.py	/^    def plot(self, ax, axis=0, **kwargs):$/;"	m	class:Slice
 ra	include/m33.py	/^ra = np.radians(23.462042)$/;"	v
 raw_dict	src/fileio.py	/^raw_dict = {"data":np.array,$/;"	v
 reduce_line_pandas	src/fileio.py	/^def reduce_line_pandas(line):$/;"	f
 reduce_line_wfcam	src/fileio.py	/^def reduce_line_wfcam(line):$/;"	f
+remove_nonstellar	src/catalog.py	/^    def remove_nonstellar(self):$/;"	m	class:Catalog
+replace	src/catalog.py	/^    def replace(self, data, key, rename_key=""):$/;"	m	class:Catalog
 serialise	src/fileio.py	/^def serialise(filename, catalog_dict={}):$/;"	f
+set_level	src/log.py	/^    def set_level(self, _level):$/;"	m	class:Logging
 split_pandas_line	src/fileio.py	/^def split_pandas_line(line, dtype=str):$/;"	f
 split_wfcam_line	src/fileio.py	/^def split_wfcam_line(line, dtype=str):$/;"	f
 test_filelength	tests/test_messier33.py	/^    def test_filelength(self):$/;"	m	class:Messier33Test
 test_from_pandas	tests/test_messier33.py	/^    def test_from_pandas(self):$/;"	m	class:Messier33Test
 test_from_wfcam	tests/test_messier33.py	/^    def test_from_wfcam(self):$/;"	m	class:Messier33Test
 test_hmsdms	tests/test_messier33.py	/^    def test_hmsdms(self):$/;"	m	class:Messier33Test
-tmp_dust_correct	src/catalog.py	/^    def tmp_dust_correct(self):$/;"	m	class:Catalog
 to_dict	src/catalog.py	/^    def to_dict(self):$/;"	m	class:Catalog
+warn	__init__.py	/^def warn(message): log.warn(message)$/;"	f
+warn	src/log.py	/^    def warn(self, message):$/;"	m	class:Logging
+x	src/fileio.py	/^    x=import_from_raw(Messier33.DATA+"\/initial\/pandas_m33_2009.unique", "pandas")$/;"	v

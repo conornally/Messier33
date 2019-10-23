@@ -10,12 +10,8 @@ class Catalog(object):
         self.style=style
         self.name=name
         self.size=size
-        self.indices={}
-        self.bands=[]
         self.units=units
         self.indices = indices
-        for key in indices.keys(): 
-            if("cls" in key): self.bands.append(key[0])
         if(style=="pandas"): self.config=Messier33.pandas_config
         self.history=history
 
@@ -29,6 +25,12 @@ class Catalog(object):
             self = mask.apply_on(self, overwrite=True)
         self.history.append("Removed any non-stellar sources from catalog")
 
+    @property
+    def bands(self):
+        bands=[]
+        for key in self.indices.keys(): 
+            if("cls" in key): bands.append(key[0])
+        return bands
 
     def __getitem__(self, key):
         if(type(key)==int or type(key)==slice): return self._data[key]
@@ -170,6 +172,21 @@ class Catalog(object):
             self.append(io, "io")
         self.history.append("Extinction Correction in bands g,i")
 
+    def apply_distance_modulus(self, d1, d2=10, overwrite=True):
+        """
+        INPUT:  d1=current distance of sources [pc]
+                d2=new distance of sources (default to 10pc
+                #might just make this always true #overwrite (True) overwrites each magnitude band
+        FUNC:   scales apparent magnitudes to appear as though they were at d2
+                m2 = m1 - 5log10(d1/d2)
+        """
+        Messier33.info("Scaling distance from %f --> %f\n"%(d1,d2))
+        dist_modulus = 5*np.log10(d1/d2)
+        for band in self.bands:
+            if(overwrite): self.replace(self[band]-dist_modulus, band)
+            else: self.append(self[band]-dist_modulus)
+        self.history.append("Moved galactic distance from %f to %f updating magnitudes accordingly"%(d1,d2))
+
 if __name__=="__main__":
     Messier33.log_level(2)
     c=Catalog.from_pandas(filename="%s/test/pandas.test"%Messier33.DATA)
@@ -188,5 +205,8 @@ if __name__=="__main__":
     c.convert_to_stdcoords()
     c.deproject_radii()
     c.correct_dust()
+    print(np.mean(c['g']))
+    c.apply_distance_modulus(850e+3, 3.6e+6)
+    print(np.mean(c['g']))
     for h in c.history: print(h)
 

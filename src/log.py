@@ -2,13 +2,14 @@ import sys
 
 class Logging:
     def __init__(self, level=0):
-        self.level=self.set_level(level)
+        self.set_level(level)
 
     def set_level(self, _level):
         if(type(_level)!=int or _level<0): raise ValueError("level must be positive integar, got %s"%_level)
         self.level=_level
 
     def _log(self, message, level):
+        print(self.level)
         if(level<=self.level): sys.stdout.write(message)
 
     def debug(self, message):
