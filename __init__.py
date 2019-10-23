@@ -2,9 +2,7 @@ from Messier33.src.log import Logging
 
 global log_level
 log_level=2
-def debug(msg):
-    print("init%d"%log_level)
-    Logging(log_level).debug(msg)
+def debug(msg): Logging(log_level).debug(msg)
 def info(msg):Logging(log_level).info(msg)
 def warn(msg):Logging(log_level).warn(msg)
 

@@ -9,7 +9,6 @@ class Logging:
         self.level=_level
 
     def _log(self, message, level):
-        print(self.level)
         if(level<=self.level): sys.stdout.write(message)
 
     def debug(self, message):
