@@ -70,6 +70,22 @@ class Catalog(object):
         if(rename_key): self.indices[rename_key] = self.indices.pop(key)
         self.history.append("Replaced %s column in position %d"%(key,self.indices[key]))
 
+    def delete(self, key):
+        """
+        INPUT:  key=(str) of column to delete from data
+                    (int) or (slice) of rows to delete
+        FUNC:   removes portion of dataset
+        """
+        print(key, type(key))
+        if(type(key)==str):
+            if(key not in self.indices): raise KeyError("key='%s' does not exist in data set"%key)
+            self._data=np.delete(self._data, self.indices[key], axis=1)
+            self.indices.pop(key)
+        else:
+            self._data=np.delete(self._data, key, axis=0)
+        self.history.append("Deleted %s from dataset"%key)
+
+
     @classmethod
     def copy(cls, other):
         other_dict=other.to_dict()
@@ -188,7 +204,6 @@ class Catalog(object):
         self.history.append("Moved galactic distance from %f to %f updating magnitudes accordingly"%(d1,d2))
 
 if __name__=="__main__":
-    Messier33.log_level(2)
     c=Catalog.from_pandas(filename="%s/test/pandas.test"%Messier33.DATA)
     #c=Catalog.from_pandas(filename="%s/initial/pandas_m33_2009.unique"%Messier33.DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%Messier33.DATA)
@@ -200,13 +215,3 @@ if __name__=="__main__":
     #c.convert_to_stdcoords()
     #c.deproject_radii()
     #c.correct_dust(overwrite=False)
-
-    c.remove_nonstellar()
-    c.convert_to_stdcoords()
-    c.deproject_radii()
-    c.correct_dust()
-    print(np.mean(c['g']))
-    c.apply_distance_modulus(850e+3, 3.6e+6)
-    print(np.mean(c['g']))
-    for h in c.history: print(h)
-
