@@ -13,6 +13,7 @@ class Catalog(object):
         self.units=units
         self.indices = indices
         if(style=="pandas"): self.config=Messier33.pandas_config
+        elif(style=="wfcam"): self.config=Messier33.wfcam_config
         self.history=history
 
     def __len__(self):
@@ -68,7 +69,8 @@ class Catalog(object):
         if(key not in self.indices): raise KeyError("key='%s' does not exist in data set"%key)
         self[key] = data
         if(rename_key): self.indices[rename_key] = self.indices.pop(key)
-        self.history.append("Replaced %s column in position %d"%(key,self.indices[key]))
+        try:self.history.append("Replaced %s column in position %d"%(key,self.indices[key]))
+        except:self.history.append("Replaced %s column in position %d"%(key,self.indices[rename_key]))
 
     def delete(self, key):
         """
@@ -165,6 +167,23 @@ class Catalog(object):
         self.history.append("Deprojected Radii from galactic centre")
         return(self['dist'])
 
+    def extinction_correct(self):
+        """
+        INPUT:  overwrite (True) filter mag column with corrected magnitudes
+        FUNC:   using SFDQuery finds E(B-V) for each ra,dec in catalog and 
+                corrects the filter magnitudes using this value
+        """
+        Messier33.info("*Correcting Dust Extinction\n")
+        coords = SkyCoord(self['ra'], self['dec'], unit=u.deg)
+        ebv = SFDQuery()(coords)
+        for band in self.bands:
+            Messier33.info("**R_%s=%.4f (%s)\n"%(band, self.config.Rv3_1[band], self.config.Rv3_1['ref']))
+            o = self[band] - (self.config.Rv3_1[band]*ebv)
+            self.replace(o, band, rename_key="%so"%band)
+            #self.indices["%so"]=self.indices[band]
+
+
+
     def correct_dust(self, overwrite=True):
         """
         INPUT:  overwrite (True) filter mag column with corrected magnitudes
@@ -204,14 +223,14 @@ class Catalog(object):
         self.history.append("Moved galactic distance from %f to %f updating magnitudes accordingly"%(d1,d2))
 
 if __name__=="__main__":
-    c=Catalog.from_pandas(filename="%s/test/pandas.test"%Messier33.DATA)
+    #c=Catalog.from_pandas(filename="%s/test/pandas.test"%Messier33.DATA)
     #c=Catalog.from_pandas(filename="%s/initial/pandas_m33_2009.unique"%Messier33.DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%Messier33.DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/../initial/pandas_m33_2009.unique"%Messier33.DATA)
-    #c=Catalog.from_wfcam(filename="%s/wfcam.test"%Messier33.DATA)
+    c=Catalog.from_wfcam(filename="%s/test/wfcam.test"%Messier33.DATA)
     #c.export()
-    #c=Catalog.from_serialised("%s/wfcam.test.pickle"%Messier33.OUT)
     #c.crop()
     #c.convert_to_stdcoords()
     #c.deproject_radii()
     #c.correct_dust(overwrite=False)
+    c.extinction_correct()

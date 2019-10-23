@@ -13,6 +13,7 @@ from Messier33.src import fileio as io
 from Messier33.src.loading import Loading
 import Messier33.src.mask as mask
 import Messier33.include.pandas_config as pandas_config
+import Messier33.include.wfcam_config as wfcam_config
 
 
 
