@@ -180,32 +180,7 @@ class Catalog(object):
             Messier33.info("**R_%s=%.4f (%s)\n"%(band, self.config.Rv3_1[band], self.config.Rv3_1['ref']))
             o = self[band] - (self.config.Rv3_1[band]*ebv)
             self.replace(o, band, rename_key="%so"%band)
-            #self.indices["%so"]=self.indices[band]
-
-
-
-    def correct_dust(self, overwrite=True):
-        """
-        INPUT:  overwrite (True) filter mag column with corrected magnitudes
-        FUNC:   using SFDQuery finds E(B-V) for each ra,dec in catalog and 
-                corrects the filter magnitudes using this value
-        """
-        Messier33.info("*Correcting Dust Extinction\n")
-        if(self.style=="wfcam"): raise NotImplementedError("wfcam dust correction not implenemted yet")
-        coords = SkyCoord(self['ra'], self['dec'], unit=u.deg)
-        ebv = SFDQuery()(coords)
-        
-        go = self['g'] - (self.config.g_dust_coeff*ebv)
-        io = self['i'] - (self.config.i_dust_coeff*ebv)
-        if(overwrite):
-            self.replace(go, "g")
-            self.replace(io, "i")
-            self.indices["go"]=self.indices["g"]
-            self.indices["io"]=self.indices["i"]
-        else:
-            self.append(go, "go")
-            self.append(io, "io")
-        self.history.append("Extinction Correction in bands g,i")
+        self.history.append("Extinction Correction in bands %s"%self.bands)
 
     def apply_distance_modulus(self, d1, d2=10, overwrite=True):
         """
@@ -234,3 +209,4 @@ if __name__=="__main__":
     #c.deproject_radii()
     #c.correct_dust(overwrite=False)
     c.extinction_correct()
+    print(c.history)
