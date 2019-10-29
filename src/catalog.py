@@ -167,7 +167,7 @@ class Catalog(object):
         self.history.append("Deprojected Radii from galactic centre")
         return(self['dist'])
 
-    def extinction_correct(self):
+    def extinction_correct(self, overwrite=False):
         """
         INPUT:  overwrite (True) filter mag column with corrected magnitudes
         FUNC:   using SFDQuery finds E(B-V) for each ra,dec in catalog and 
@@ -179,10 +179,11 @@ class Catalog(object):
         for band in self.bands:
             Messier33.info("**R_%s=%.4f (%s)\n"%(band, self.config.Rv3_1[band], self.config.Rv3_1['ref']))
             o = self[band] - (self.config.Rv3_1[band]*ebv)
-            self.replace(o, band, rename_key="%so"%band)
+            self.append(o, key="%so"%band)
+            if(overwrite): self.delete(band)
         self.history.append("Extinction Correction in bands %s"%self.bands)
 
-    def apply_distance_modulus(self, d1, d2=10, overwrite=True):
+    def apply_distance_modulus(self, d1, d2=10):
         """
         INPUT:  d1=current distance of sources [pc]
                 d2=new distance of sources (default to 10pc
@@ -192,10 +193,11 @@ class Catalog(object):
         """
         Messier33.info("Scaling distance from %f --> %f\n"%(d1,d2))
         dist_modulus = 5*np.log10(d1/d2)
+        print(dist_modulus)
         for band in self.bands:
-            if(overwrite): self.replace(self[band]-dist_modulus, band)
-            else: self.append(self[band]-dist_modulus)
-        self.history.append("Moved galactic distance from %f to %f updating magnitudes accordingly"%(d1,d2))
+            self.replace(self[band]-dist_modulus, band)
+            if("%so"%band in self.indices): self.replace(self["%so"%band]-dist_modulus, "%so"%band)
+        self.history.append("Moved galactic distance from %f to %f updating magnitudes by %f"%(d1,d2, dist_modulus))
 
 if __name__=="__main__":
     #c=Catalog.from_pandas(filename="%s/test/pandas.test"%Messier33.DATA)

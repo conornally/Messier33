@@ -19,6 +19,8 @@ ParentMask	src/mask.py	/^class ParentMask(object):$/;"	c
 Polygon	src/mask.py	/^class Polygon(ParentMask):$/;"	c
 Preset	src/mask.py	/^class Preset(Polygon):$/;"	c
 ROOT	include/config.py	/^ROOT="\/home\/conor\/mphys\/m33"$/;"	v
+Rv3_1	include/pandas_config.py	/^Rv3_1={'g':3.303, 'i':1.698, "ref":"Schlafly-11"}$/;"	v
+Rv3_1	include/wfcam_config.py	/^Rv3_1={'J':0.709, 'H':0.449, 'K':0.302, "ref":"Schlafly-11"}$/;"	v
 Slice	src/mask.py	/^class Slice(ParentMask):$/;"	c
 __add__	src/mask.py	/^    def __add__(self, mask):$/;"	m	class:ParentMask	file:
 __call__	src/loading.py	/^    def __call__(self, i):$/;"	m	class:Loading	file:
@@ -44,40 +46,39 @@ _crop	src/mask.py	/^    def _crop(self, catalog):$/;"	m	class:Slice
 _log	src/log.py	/^    def _log(self, message, level):$/;"	m	class:Logging
 a	include/m33.py	/^a = 7.50E-02 ##dont really get this number$/;"	v
 append	src/catalog.py	/^    def append(self, data, key="key"):$/;"	m	class:Catalog
+apply_distance_modulus	src/catalog.py	/^    def apply_distance_modulus(self, d1, d2=10, overwrite=True):$/;"	m	class:Catalog
 apply_on	src/mask.py	/^    def apply_on(self, catalog, overwrite=False):$/;"	m	class:ParentMask
 b	include/m33.py	/^b = 7.50E-02$/;"	v
 bands	src/catalog.py	/^    def bands(self):$/;"	m	class:Catalog
-c	src/catalog.py	/^    c=Catalog.from_pandas(filename="%s\/test\/pandas.test"%Messier33.DATA)$/;"	v	class:Catalog
+c	src/catalog.py	/^    c=Catalog.from_wfcam(filename="%s\/test\/wfcam.test"%Messier33.DATA)$/;"	v	class:Catalog
 convert_to_stdcoords	src/catalog.py	/^    def convert_to_stdcoords(self, A=0, D=0):$/;"	m	class:Catalog
 copy	src/catalog.py	/^    def copy(cls, other):$/;"	m	class:Catalog
-correct_dust	src/catalog.py	/^    def correct_dust(self, overwrite=True):$/;"	m	class:Catalog
-debug	__init__.py	/^def debug(message): log.debug(message)$/;"	f
+debug	__init__.py	/^def debug(msg): Logging(log_level).debug(msg)$/;"	f
 debug	src/log.py	/^    def debug(self, message):$/;"	m	class:Logging
 dec	include/m33.py	/^dec= np.radians(30.660222)$/;"	v
+delete	src/catalog.py	/^    def delete(self, key):$/;"	m	class:Catalog
 deproject_radii	src/catalog.py	/^    def deproject_radii(self):$/;"	m	class:Catalog
 display	src/loading.py	/^    def display(self):$/;"	m	class:Loading
 dms_to_degrees	include/m33.py	/^def dms_to_degrees(d,m,s):$/;"	f
 enum	src/fileio.py	/^def enum(lst):$/;"	f
 export	src/catalog.py	/^    def export(self, filename=''):$/;"	m	class:Catalog
+extinction_correct	src/catalog.py	/^    def extinction_correct(self):$/;"	m	class:Catalog
 filelength	src/fileio.py	/^def filelength(filename):$/;"	f
 from_dict	src/catalog.py	/^    def from_dict(cls, raw_dict):$/;"	m	class:Catalog
 from_pandas	src/catalog.py	/^    def from_pandas(cls, filename):$/;"	m	class:Catalog
 from_serialised	src/catalog.py	/^    def from_serialised(cls, filename):$/;"	m	class:Catalog
 from_wfcam	src/catalog.py	/^    def from_wfcam(cls, filename):$/;"	m	class:Catalog
-g_dust_coeff	include/pandas_config.py	/^g_dust_coeff = 3.793 # McConnachi10$/;"	v
 generate_index	src/mask.py	/^    def generate_index(self, catalog):$/;"	m	class:ParentMask
 hms_to_degrees	include/m33.py	/^def hms_to_degrees(h,m,s):$/;"	f
-i_dust_coeff	include/pandas_config.py	/^i_dust_coeff = 2.086 # McConnachi10$/;"	v
 import_from_raw	src/fileio.py	/^def import_from_raw(filename, style="pandas"):$/;"	f
 import_from_serialised	src/fileio.py	/^def import_from_serialised(filename):$/;"	f
 inclination	include/m33.py	/^inclination = np.radians(53) $/;"	v
-info	__init__.py	/^def info(message): log.info(message)$/;"	f
+info	__init__.py	/^def info(msg):Logging(log_level).info(msg)$/;"	f
 info	src/log.py	/^    def info(self, message):$/;"	m	class:Logging
 invert_index	src/mask.py	/^    def invert_index(self, n):$/;"	m	class:ParentMask
 l	src/loading.py	/^    l=Loading(100, 30)$/;"	v
 l	src/log.py	/^    l = Logging(0)$/;"	v	class:Logging
-log	__init__.py	/^log = Logging(2)$/;"	v
-log_level	__init__.py	/^def log_level(level): log.set_level(level)$/;"	f
+log_level	__init__.py	/^log_level=2$/;"	v
 mask	src/mask.py	/^    mask = Preset()$/;"	v
 mean	src/catalog.py	/^    def mean(self, key='g'):$/;"	m	class:Catalog
 n_cols	src/fileio.py	/^n_cols = {"pandas_raw":18, "wfcam_raw":22, "pandas_reduced":8, "wfcam_reduced":11}$/;"	v
@@ -102,6 +103,6 @@ test_from_pandas	tests/test_messier33.py	/^    def test_from_pandas(self):$/;"	m
 test_from_wfcam	tests/test_messier33.py	/^    def test_from_wfcam(self):$/;"	m	class:Messier33Test
 test_hmsdms	tests/test_messier33.py	/^    def test_hmsdms(self):$/;"	m	class:Messier33Test
 to_dict	src/catalog.py	/^    def to_dict(self):$/;"	m	class:Catalog
-warn	__init__.py	/^def warn(message): log.warn(message)$/;"	f
+warn	__init__.py	/^def warn(msg):Logging(log_level).warn(msg)$/;"	f
 warn	src/log.py	/^    def warn(self, message):$/;"	m	class:Logging
 x	src/fileio.py	/^    x=import_from_raw(Messier33.DATA+"\/initial\/pandas_m33_2009.unique", "pandas")$/;"	v

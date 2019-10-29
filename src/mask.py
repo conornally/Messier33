@@ -29,6 +29,7 @@ class ParentMask(object):
         RETURNS: copy of catalog with crop applied
         """
         self.generate_index(catalog)
+        Messier33.info("*Cropping %d sources on key=%s\n"%(len(self.index),self.key))
         if(overwrite): 
             catalog._data = catalog._data[self.index]
             return(catalog)
@@ -137,17 +138,17 @@ class Polygon(ParentMask):
         ax.plot(c[:,x], c[:,y], **kwargs)
 
 class Preset(Polygon):
-    def __init__(self, filename="%s/include/stype_masks/test.mask"%Messier33.HOME):
+    def __init__(self, filename="%s/include/stype_masks/test.mask"%Messier33.HOME, inverse=False):
         with open(filename, 'r') as raw:
             line = raw.readline().strip("\n").split(';')
         self.name=line[0]
         keys=line[1:3]
         points=  line[3:]
         arr_points = np.array(points, dtype=float).reshape((int(len(points)/2),2))
-        super(Preset,self).__init__(arr_points, keys)
+        super(Preset,self).__init__(arr_points, keys, inverse)
 
     def plot(self, ax, axis=0, **kwargs):
-        super().plot(ax,axis=axis, label=self.name, **kwargs)
+        super().plot(ax,axis=axis, label=self.name, lw=1, **kwargs)
 
 
 if(__name__=="__main__"):

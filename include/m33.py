@@ -13,3 +13,5 @@ def hms_to_degrees(h,m,s):
 def dms_to_degrees(d,m,s):
     return(d+(m/60.0)+(s/3600.0))
 
+def distance_modulus(d1,d2=10):
+    return 5.0*np.log10(d1/d2)
