@@ -19,7 +19,7 @@ mask = Messier33.mask.Slice( (0.5,1.5), "dist")
 catalog = mask.apply_on(catalog)
 
 mask2=Messier33.mask.Polygon( [(0,0),(1,1),(0,1)], ["g", "g-i"])
-cat_2 = mask2.apply_on(catalog) ##VERIFY this creates a copy?? i dont think it does
+cat_2 = mask2.apply_on(catalog) 
 
 catalog.export("out.pickle")
 catalog = Messier33.Catalog.from_serialised("out.pickle")
