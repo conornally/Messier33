@@ -78,7 +78,7 @@ class Catalog(object):
                     (int) or (slice) of rows to delete
         FUNC:   removes portion of dataset
         """
-        print(key, type(key))
+        #print(key, type(key))
         if(type(key)==str):
             if(key not in self.indices): raise KeyError("key='%s' does not exist in data set"%key)
             self._data=np.delete(self._data, self.indices[key], axis=1)
@@ -180,6 +180,7 @@ class Catalog(object):
             Messier33.info("**R_%s=%.4f (%s)\n"%(band, self.config.Rv3_1[band], self.config.Rv3_1['ref']))
             o = self[band] - (self.config.Rv3_1[band]*ebv)
             self.append(o, key="%so"%band)
+            self.indices["d%so"%band]=self.indices["d%s"%band]
             if(overwrite): self.delete(band)
         self.history.append("Extinction Correction in bands %s"%self.bands)
 
