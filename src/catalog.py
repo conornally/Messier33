@@ -137,6 +137,14 @@ class Catalog(object):
     def export(self, filename=''):
         if(filename==''): filename="%s/%s.pickle"%(Messier33.OUT, self.name)
         Messier33.io.serialise(filename, self.to_dict())
+    
+    def export_ascii(self, filename=''):
+        if(filename==''):filename="%s/%s.tab"%(Messier33.OUT, self.name)
+        Messier33.info("*Exporting to %s\n"%filename)
+        _head = sorted(self.indices.items(), key=lambda x:x[1])
+        head=''
+        for x in _head: head+="%s "%x[0]
+        np.savetxt(filename, self._data, header=head)
 
     def convert_to_stdcoords(self, A=0, D=0):
         Messier33.info("*Converting RADEC to Standard Coordinates\n")
@@ -166,6 +174,26 @@ class Catalog(object):
         self.append(np.sqrt( _x**2.0 + _y**2.0) ,key="dist")
         self.history.append("Deprojected Radii from galactic centre")
         return(self['dist'])
+
+    def projected_radii(self, ra, dec, unit="deg"):
+        """
+        INPUT:  ra,dec of origin
+                unit = unit of ra and dec (deg,rads)
+        FUNC:   creates column "dist" with these values
+        """
+        Messier33.info("*Calculating projected radii from (%f %f)\n"%(ra,dec))
+        Messier33.warn("\x1b[31mThis funciton is overwriting column 'dist'\n\x1b[0m")
+        if(unit not in ("deg","rads")): raise ValueError("unit must be 'deg' or 'rads', not '%s'"%unit)
+        if((self.units=="rads") and (unit=="deg")):
+            ra=np.radians(ra); dec=np.radians(dec)
+            Messier33.debug("**Converting input units to radians\n")
+        elif((self.units=="deg") and (unit=="rads")):
+            ra=np.degrees(ra); dec=n.degrees(dec)
+            Messier33.debug("**Converting input units to degrees\n")
+        data= np.sqrt( (ra-self["ra"])**2.0 + (dec-self["dec"])**2.0 )
+        if("dist" not in self.indices): self.append(data, "dist")
+        else: self["dist"]=data
+
 
     def extinction_correct(self, overwrite=False):
         """
@@ -201,15 +229,20 @@ class Catalog(object):
         self.history.append("Moved galactic distance from %f to %f updating magnitudes by %f"%(d1,d2, dist_modulus))
 
 if __name__=="__main__":
-    #c=Catalog.from_pandas(filename="%s/test/pandas.test"%Messier33.DATA)
+    Messier33.log_level=3
+    c=Catalog.from_pandas(filename="%s/test/pandas.test"%Messier33.DATA)
+    #c=Catalog.from_serialised("%s/data/test/pandas.pickle"%Messier33.ROOT)
+    #c=Messier33.Catalog.from_serialised("%s/M33.pickle"%Messier33.DATA)
     #c=Catalog.from_pandas(filename="%s/initial/pandas_m33_2009.unique"%Messier33.DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%Messier33.DATA)
     #c=Catalog.from_pandas_to_array(filename="%s/../initial/pandas_m33_2009.unique"%Messier33.DATA)
-    c=Catalog.from_wfcam(filename="%s/test/wfcam.test"%Messier33.DATA)
+    #c=Catalog.from_wfcam(filename="%s/test/wfcam.test"%Messier33.DATA)
     #c.export()
     #c.crop()
     #c.convert_to_stdcoords()
     #c.deproject_radii()
     #c.correct_dust(overwrite=False)
-    c.extinction_correct()
+    #c.extinction_correct()
+    c.projected_radii(0,0, 'deg')
+    c.export_ascii()
     print(c.history)

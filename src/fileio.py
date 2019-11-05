@@ -58,9 +58,8 @@ def import_from_serialised(filename):
     load=Loading(100, prefix=filename)
     load(0)
     with open(filename, "rb") as f:
-        load(50)
         catalog_dict=pickle.load(f)
-    load(99)
+        for i in range(1,load.n_max): load(i)
     return catalog_dict 
 
 def import_from_raw(filename, style="pandas"):
