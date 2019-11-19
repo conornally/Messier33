@@ -15,10 +15,10 @@ class Logging:
         self._log(message,3)
 
     def info(self, message):
-        self._log(message,2)
+        self._log("%s"%message,2)
 
     def warn(self, message):
-        self._log(message,1)
+        self._log("\x1b[1;31m%s\x1b[0m"%message,1)
 
     def __repr__(self):
         s_level = ("quiet", "warn", "info", "debug")
