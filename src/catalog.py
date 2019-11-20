@@ -168,9 +168,10 @@ class Catalog(object):
         #Cioni09.3 - 2.3
         Messier33.info("*Deprojecting radii\n")
         Q = Messier33.PA - np.radians(90)
+        #Q = np.radians(90)- Messier33.PA
         _x = self['xi']*np.cos(Q) + self['eta']*np.sin(Q)
         _y = -self['xi']*np.sin(Q) + self['eta']*np.cos(Q)
-        _y /= Messier33.inclination
+        _y /= np.cos(Messier33.inclination)
         self.append(np.sqrt( _x**2.0 + _y**2.0) ,key="dist")
         self.history.append("Deprojected Radii from galactic centre")
         return(self['dist'])

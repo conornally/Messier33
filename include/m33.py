@@ -2,7 +2,7 @@ import numpy as np
 #https://ned.ipac.caltech.edu/byname?objname=m33&hconst=67.8&omegam=0.308&omegav=0.692&wmap=4&corr_z=1
 ra = np.radians(23.462042)
 dec= np.radians(30.660222)
-PA = np.radians(-35) ## [[for now??]] G.Lewis, R.Braun, A.McConnachie -12
+PA = np.radians(-23) ## McConachie chapman etc 10 (Stellar halo and outer disc of m33
 inclination = np.radians(53) 
 a = 7.50E-02 ##dont really get this number
 b = 7.50E-02
