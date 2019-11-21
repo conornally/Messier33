@@ -1,30 +1,37 @@
-import numpy as np
 import Messier33
 
 class Isochrone(object):
-    def __init__(self):
-        pass
+    def __init__(self, data, params={}, indices={}):
+        self._data=data
+        self.params=params
+        self.indices=indices
 
     @classmethod
-    def from_padova(cls, filename):
-        size=Messier33.io.filelength(filename)
-        load=Messier33.Loading(size,prefix=filename)
-        with open(filename,'r') as infile:
-            for i,line in enumerate(infile.readlines()):
-                load(i)
-                if(i==11): 
-                    indices=Messier33.io.enum(line.strip("\n").split(' '))
-                    _data=np.zeros((size,len(cls.extract_bands(indices))))
-                 
-        return cls
+    def from_dartmouth(cls, filename):
+        raw_dict=Messier33.io.from_dartmouthISO(filename)
+        return cls.from_dict(raw_dict)
 
-    @staticmethod
-    def extract_bands(enum):
-        index=[]
-        for key,value in enum.items():
-            if("mag" in key): index.append(value)
-        return(index)
+    @classmethod
+    def from_dict(cls, raw_dict):
+        return(cls(raw_dict["data"],
+                    params=raw_dict["params"],
+                    indices=raw_dict["indices"]))
+
+    def __getitem__(self, key):
+        if(type(key)==int or type(key)==slice): return self._data[key]
+        elif(type(key)==tuple or type(key)==list): return(np.array([self[col] for col in key]))
+        elif('-' in key): #for doing colours
+            a,b = key.split('-')
+            return(self[a]-self[b])
+        else: 
+            if(key not in self.indices): raise KeyError("key=%s not in indices"%key)
+            return( self._data[:,self.indices[key]])
+
+    def __repr__(self): return("%s"%self.params)
 
 if(__name__=="__main__"):
-    iso = Isochrone.from_padova("%s/data/isochrones/test.dat"%Messier33.ROOT)
+    iso = Isochrone.from_dartmouth("/home/conor/data/m33/isochrones/notes/data/test.iso")
+    print(iso)
+    print(iso.indices)
+    print(iso['g'][0])
 

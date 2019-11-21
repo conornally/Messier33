@@ -11,6 +11,7 @@ from Messier33 import hms_to_degrees, dms_to_degrees
 from Messier33.src.loading import Loading
 
 
+## catalog importing
 raw_dict = {"data":np.array,
             "style":"pandas",
             "size":(0,0),
@@ -85,6 +86,40 @@ def import_from_raw(filename, style="pandas"):
             data[i,0:2] = np.radians(data[i,0:2])
     return( {"data":data, "style":style, "size":_size, "indices":indices, "units":"rads", "history":[]})
 
+
+##Isochrones importing
+def import_ISO(filename, style="dartmouth"):
+    if(style=="dartmouth"): raw_dict=from_dartmouthISO(filename)
+    else: raise NotImplementedError("no other isochrone catalog supported")
+    return(raw_dict)
+
+def from_dartmouthISO(filename):
+    """INPUT:   filename of dartmouth isochrone file
+        RETURN: Isochrone obj
+    """
+    #Messier33.warn("from_dartmouthISO still in development\n")
+    params={"age":0,"feh":0,"afe":0}
+    size=0
+    with open(filename, 'r') as isofile:
+        ii=0
+        for i,line in enumerate(isofile.readlines()):
+            if(line[0]=="#"):
+                if(i==3): 
+                    params["feh"]=float(line[40:45])
+                    params["afe"]=float(line[48:52])
+                elif(i==7):
+                    params["age"]=float(line[5:10])
+                    size=int(line[17:20])
+                    _data=np.zeros((size,10))
+                    load=Loading(size,prefix=filename)
+                elif(i==8): indices=enum(line[1:].split())
+            else:
+                _data[ii]=np.array(line.split()).astype(float)
+                load(ii)
+                ii+=1
+    return({"data":_data, "params":params, "indices":indices})
+
+## general functions
 def filelength(filename):
     """
     INPUT:  Filename
