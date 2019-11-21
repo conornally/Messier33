@@ -148,7 +148,11 @@ class Preset(Polygon):
         super(Preset,self).__init__(arr_points, keys, inverse)
 
     def plot(self, ax, axis=0, **kwargs):
-        super().plot(ax,axis=axis, label=self.name, lw=1, **kwargs)
+        label=self.name 
+        if("label" in kwargs): 
+            label=kwargs["label"]
+            kwargs.pop("label")
+        super().plot(ax,axis=axis, label=label, lw=1, **kwargs)
 
 
 if(__name__=="__main__"):
