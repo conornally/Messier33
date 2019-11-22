@@ -1,108 +1,26 @@
 import numpy as np
 import Messier33
+from Messier33.src.database import DataBase
 from astropy.coordinates import SkyCoord
 import astropy.units as u
 from dustmaps.sfd import SFDQuery
 
-class Catalog(object):
-    def __init__(self, data=[], size=(0,0), style="null", name="null", indices={}, units="deg", history=[]):
-        self._data = data
+class Catalog(DataBase):
+    def __init__(self, data, style="null", name="null", indices={}, units="deg", history=[], bands=[]):
         self.style=style
-        self.name=name
-        self.size=size
         self.units=units
-        self.indices = indices
+        super(Catalog,self).__init__(data,indices=indices, history=history, name=name, bands=bands)
+
         if(style=="pandas"): self.config=Messier33.pandas_config
         elif(style=="wfcam"): self.config=Messier33.wfcam_config
-        self.history=history
-
-    def __len__(self):
-        return(self._data.shape[0])
-
-    def remove_nonstellar(self):
-        Messier33.info("*Removing non-stellar sources from catalog\n")
-        for band in self.bands:
-            mask = Messier33.mask.Bool([-1,-2], "%scls"%band)
-            self = mask.apply_on(self, overwrite=True)
-        self.history.append("Removed any non-stellar sources from catalog")
-
-    @property
-    def bands(self):
-        bands=[]
-        for key in self.indices.keys(): 
-            if("cls" in key): bands.append(key[0])
-        return bands
-
-    def __getitem__(self, key):
-        if(type(key)==int or type(key)==slice): return self._data[key]
-        elif(type(key)==tuple or type(key)==list): return(np.array([self[col] for col in key]))
-        elif('-' in key): #for doing colours
-            a,b = key.split('-')
-            return(self[a]-self[b])
-        else: 
-            if(key not in self.indices): raise KeyError("key=%s not in indices"%key)
-            return( self._data[:,self.indices[key]])
-    
-    def __setitem__(self, key, item):
-        if(type(key)==int): self._data[key]=item
-        else: self._data[:,self.indices[key]]=item
-    
-    def append(self, data, key="key"):
-        """
-        INPUT:  list of values [1x(len(catalog))]
-                key = indexing key if desired
-        FUNC:   combines input list into Catalog._data
-        """
-        if(len(data)!=len(self)): raise ValueError("Input list must be of shape (1,%d), recieved %s"%(len(self), np.shape(data)))
-        if(key in self.indices): raise KeyError("key='%s' exists in data set"%key)
-        self._data = np.append( self._data, np.empty((len(self),1)), axis=1)
-        self.indices[key] = len(self[0])-1
-        self[key] = data
-        self.history.append("Appended %s column in position %d"%(key,self.indices[key]))
-
-    def replace(self, data, key, rename_key=""):
-        """
-        INPUT:  list of values as column
-                key = key in catalog to replace
-        """
-        if(len(data)!=len(self)): raise ValueError("Input list must be of shape (1,%d), recieved %s"%(len(self), np.shape(data)))
-        if(key not in self.indices): raise KeyError("key='%s' does not exist in data set"%key)
-        self[key] = data
-        if(rename_key): self.indices[rename_key] = self.indices.pop(key)
-        try:self.history.append("Replaced %s column in position %d"%(key,self.indices[key]))
-        except:self.history.append("Replaced %s column in position %d"%(key,self.indices[rename_key]))
-
-    def delete(self, key):
-        """
-        INPUT:  key=(str) of column to delete from data
-                    (int) or (slice) of rows to delete
-        FUNC:   removes portion of dataset
-        """
-        #print(key, type(key))
-        if(type(key)==str):
-            if(key not in self.indices): raise KeyError("key='%s' does not exist in data set"%key)
-            self._data=np.delete(self._data, self.indices[key], axis=1)
-            self.indices.pop(key)
-        else:
-            self._data=np.delete(self._data, key, axis=0)
-        self.history.append("Deleted %s from dataset"%key)
-
-
-    @classmethod
-    def copy(cls, other):
-        other_dict=other.to_dict()
-        cls = cls.from_dict(other_dict)
-        return(cls)
 
     @classmethod
     def from_dict(cls, raw_dict):
-        cls = cls(  data=raw_dict["data"],
+        return(cls(  data=raw_dict["data"],
                     style=raw_dict["style"],
-                    size=raw_dict["size"], 
                     indices=raw_dict["indices"], 
                     units=raw_dict["units"],
-                    history=raw_dict["history"])
-        return cls
+                    history=raw_dict["history"]))
 
     @classmethod
     def from_pandas(cls, filename):
@@ -122,30 +40,7 @@ class Catalog(object):
         cls.name=filename.split('/')[-1]
         return cls
 
-    def mean(self, key='g'):
-        if(key not in self.indices): raise KeyError("key='%s' not in data set"%key)
-        return(np.mean(self[key]))
-
-    def to_dict(self):
-        return({"data":self._data,
-                "style":self.style,
-                "size":self.size,
-                "indices":self.indices,
-                "units":self.units,
-                "history":self.history})
-
-    def export(self, filename=''):
-        if(filename==''): filename="%s/%s.pickle"%(Messier33.OUT, self.name)
-        Messier33.io.serialise(filename, self.to_dict())
     
-    def export_ascii(self, filename=''):
-        if(filename==''):filename="%s/%s.tab"%(Messier33.OUT, self.name)
-        Messier33.info("*Exporting to %s\n"%filename)
-        _head = sorted(self.indices.items(), key=lambda x:x[1])
-        head=''
-        for x in _head: head+="%s "%x[0]
-        np.savetxt(filename, self._data, header=head)
-
     def convert_to_stdcoords(self, A=0, D=0):
         Messier33.info("*Converting RADEC to Standard Coordinates\n")
         if(not A):A=Messier33.ra
@@ -164,7 +59,7 @@ class Catalog(object):
         self.history.append("Converted RADEC to STDCoordinates")
 
     def deproject_radii(self):
-        #not sure best interface, should i add to _data, or create a new thing, or just return it
+        #not sure best interface, should i add to data, or create a new thing, or just return it
         #Cioni09.3 - 2.3
         Messier33.info("*Deprojecting radii\n")
         Q = Messier33.PA - np.radians(90)
@@ -229,21 +124,17 @@ class Catalog(object):
             if("%so"%band in self.indices): self.replace(self["%so"%band]-dist_modulus, "%so"%band)
         self.history.append("Moved galactic distance from %f to %f updating magnitudes by %f"%(d1,d2, dist_modulus))
 
+    def remove_nonstellar(self):
+        Messier33.info("*Removing non-stellar sources from catalog\n")
+        for band in self.bands:
+            mask = Messier33.mask.Bool([-1,-2], "%scls"%band)
+            self = mask.apply_on(self, overwrite=True)
+        self.history.append("Removed any non-stellar sources from catalog")
+
+
 if __name__=="__main__":
     Messier33.log_level=3
-    c=Catalog.from_pandas(filename="%s/test/pandas.test"%Messier33.DATA)
-    #c=Catalog.from_serialised("%s/data/test/pandas.pickle"%Messier33.ROOT)
-    #c=Messier33.Catalog.from_serialised("%s/M33.pickle"%Messier33.DATA)
-    #c=Catalog.from_pandas(filename="%s/initial/pandas_m33_2009.unique"%Messier33.DATA)
-    #c=Catalog.from_pandas_to_array(filename="%s/pandas.test"%Messier33.DATA)
-    #c=Catalog.from_pandas_to_array(filename="%s/../initial/pandas_m33_2009.unique"%Messier33.DATA)
-    #c=Catalog.from_wfcam(filename="%s/test/wfcam.test"%Messier33.DATA)
-    #c.export()
-    #c.crop()
-    #c.convert_to_stdcoords()
-    #c.deproject_radii()
-    #c.correct_dust(overwrite=False)
-    #c.extinction_correct()
-    c.projected_radii(0,0, 'deg')
-    c.export_ascii()
-    print(c.history)
+    data=[[0,0],[0,0]]
+    indices={'x':0,'y':0}
+    c=Catalog(data,indices)
+    c2=c.copy(c)
