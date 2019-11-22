@@ -9,6 +9,7 @@ def warn(msg):Logging(log_level).warn(msg)
 from Messier33.include.m33 import *
 from Messier33.include.config import *
 from Messier33.src.catalog import Catalog
+from Messier33.src.isochrones import Isochrone
 from Messier33.src import fileio as io
 from Messier33.src.loading import Loading
 import Messier33.src.mask as mask

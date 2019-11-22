@@ -99,6 +99,7 @@ def from_dartmouthISO(filename):
     """
     #Messier33.warn("from_dartmouthISO still in development\n")
     params={"age":0,"feh":0,"afe":0}
+    bands=['u','g','r',"i_new","i_old"]
     size=0
     with open(filename, 'r') as isofile:
         ii=0
@@ -117,7 +118,7 @@ def from_dartmouthISO(filename):
                 _data[ii]=np.array(line.split()).astype(float)
                 load(ii)
                 ii+=1
-    return({"data":_data, "params":params, "indices":indices})
+    return({"data":_data, "params":params, "indices":indices, "bands":bands})
 
 ## general functions
 def filelength(filename):
