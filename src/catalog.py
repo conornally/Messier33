@@ -1,6 +1,4 @@
-import numpy as np
-import Messier33
-from Messier33.src.database import DataBase
+from Messier33.src.database import *
 from astropy.coordinates import SkyCoord
 import astropy.units as u
 from dustmaps.sfd import SFDQuery
@@ -20,7 +18,14 @@ class Catalog(DataBase):
                     style=raw_dict["style"],
                     indices=raw_dict["indices"], 
                     units=raw_dict["units"],
-                    history=raw_dict["history"]))
+                    history=raw_dict["history"],
+                    bands=raw_dict["bands"]))
+
+    def to_dict(self):
+        parent_dict=super().to_dict()
+        if("config" in parent_dict): parent_dict.pop("config")
+        print(parent_dict["bands"])
+        return(parent_dict)
 
     @classmethod
     def from_pandas(cls, filename):
@@ -39,7 +44,6 @@ class Catalog(DataBase):
         cls=cls.from_dict(Messier33.io.import_from_serialised(filename))
         cls.name=filename.split('/')[-1]
         return cls
-
     
     def convert_to_stdcoords(self, A=0, D=0):
         Messier33.info("*Converting RADEC to Standard Coordinates\n")
@@ -59,11 +63,9 @@ class Catalog(DataBase):
         self.history.append("Converted RADEC to STDCoordinates")
 
     def deproject_radii(self):
-        #not sure best interface, should i add to data, or create a new thing, or just return it
         #Cioni09.3 - 2.3
         Messier33.info("*Deprojecting radii\n")
         Q = Messier33.PA - np.radians(90)
-        #Q = np.radians(90)- Messier33.PA
         _x = self['xi']*np.cos(Q) + self['eta']*np.sin(Q)
         _y = -self['xi']*np.sin(Q) + self['eta']*np.cos(Q)
         _y /= np.cos(Messier33.inclination)
@@ -108,22 +110,6 @@ class Catalog(DataBase):
             if(overwrite): self.delete(band)
         self.history.append("Extinction Correction in bands %s"%self.bands)
 
-    def apply_distance_modulus(self, d1, d2=10):
-        """
-        INPUT:  d1=current distance of sources [pc]
-                d2=new distance of sources (default to 10pc
-                #might just make this always true #overwrite (True) overwrites each magnitude band
-        FUNC:   scales apparent magnitudes to appear as though they were at d2
-                m2 = m1 - 5log10(d1/d2)
-        """
-        Messier33.info("Scaling distance from %f --> %f\n"%(d1,d2))
-        dist_modulus = 5*np.log10(d1/d2)
-        print(dist_modulus)
-        for band in self.bands:
-            self.replace(self[band]-dist_modulus, band)
-            if("%so"%band in self.indices): self.replace(self["%so"%band]-dist_modulus, "%so"%band)
-        self.history.append("Moved galactic distance from %f to %f updating magnitudes by %f"%(d1,d2, dist_modulus))
-
     def remove_nonstellar(self):
         Messier33.info("*Removing non-stellar sources from catalog\n")
         for band in self.bands:
@@ -134,7 +120,7 @@ class Catalog(DataBase):
 
 if __name__=="__main__":
     Messier33.log_level=3
-    data=[[0,0],[0,0]]
+    data=np.zeros((5,2))
     indices={'x':0,'y':0}
     c=Catalog(data,indices)
     c2=c.copy(c)

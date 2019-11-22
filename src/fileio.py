@@ -12,11 +12,10 @@ from Messier33.src.loading import Loading
 
 
 ## catalog importing
-raw_dict = {"data":np.array,
-            "style":"pandas",
-            "size":(0,0),
-            "indices":{},
-            "history":[]}
+template_dict = {"data":np.array,
+                "style":"pandas",
+                "indices":{},
+                "history":[]}
 
 n_cols = {"pandas_raw":18, "wfcam_raw":22, "pandas_reduced":8, "wfcam_reduced":11}
 
@@ -72,7 +71,7 @@ def import_from_raw(filename, style="pandas"):
     """
     _size = (filelength(filename), n_cols["%s_reduced"%style])
     data = np.zeros(_size)
-    indices=raw_dict["indices"]
+    indices={}
     load = Loading(_size[0], prefix=filename)
     with open(filename) as f:
         for i, line in enumerate(f.readlines()):
@@ -84,7 +83,10 @@ def import_from_raw(filename, style="pandas"):
                 data[i] = reduce_line_wfcam(line)
                 indices=enum(["ra","dec","J","dJ","Jcls","H","dH","Hcls", "K", "dK", "Kcls"])
             data[i,0:2] = np.radians(data[i,0:2])
-    return( {"data":data, "style":style, "size":_size, "indices":indices, "units":"rads", "history":[]})
+    bands=[]
+    for ind in indices:
+        if("cls"in ind): bands.append(ind[0])
+    return( {"data":data, "style":style, "indices":indices, "units":"rads", "history":[], "bands":bands})
 
 
 ##Isochrones importing

@@ -32,6 +32,7 @@ class DataBase(object):
         else: self.data[:,self.indices[key]]=item
 
     def __len__(self): return(self.data.shape[0])
+    def __repr__(self): return("%s"%self.name)
 
     def append(self, data, key="key"):
         """
@@ -42,8 +43,8 @@ class DataBase(object):
         if(len(data)!=len(self)): raise ValueError("Input list must be of shape (1,%d), recieved %s"%(len(self), np.shape(data)))
         if(key in self.indices): raise KeyError("key='%s' exists in data set"%key)
         self.data = np.append( self.data, np.empty((len(self),1)), axis=1) #why did i do it this way again
-        self[key] = data
         self.indices[key] = len(self[0])-1
+        self[key] = data
         self.history.append("00-Appended %s column in position %d"%(key,self.indices[key]))
 
     def replace(self, data, key, rename_key=""):
@@ -98,6 +99,26 @@ class DataBase(object):
         head=''
         for x in _head: head+="%s "%x[0]
         np.savetxt(filename, self.data, header=head)
+
+    ######
+    #here the cooler moreuseful astro functions reside
+    ####
+
+    def apply_distance_modulus(self, d1, d2=10):
+        """
+        INPUT:  d1=current distance of sources [pc]
+                d2=new distance of sources (default to 10pc
+                #might just make this always true #overwrite (True) overwrites each magnitude band
+        FUNC:   scales apparent magnitudes to appear as though they were at d2
+                m2 = m1 - 5log10(d1/d2)
+        """
+        Messier33.info("Scaling distance from %f --> %f\n"%(d1,d2))
+        dist_modulus = 5*np.log10(d1/d2)
+        print(dist_modulus)
+        for band in self.bands:
+            self.replace(self[band]-dist_modulus, band)
+            if("%so"%band in self.indices): self.replace(self["%so"%band]-dist_modulus, "%so"%band)
+        self.history.append("Moved galactic distance from %f to %f updating magnitudes by %f"%(d1,d2, dist_modulus))
 
 if(__name__=="__main__"):
     db=DataBase(np.zeros((5,2)), indices={'x':0,'y':1})
