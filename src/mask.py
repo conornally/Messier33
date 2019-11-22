@@ -31,11 +31,11 @@ class ParentMask(object):
         self.generate_index(catalog)
         Messier33.info("*Cropping %d sources on key=%s\n"%(len(self.index),self.key))
         if(overwrite): 
-            catalog._data = catalog._data[self.index]
+            catalog.data = catalog.data[self.index]
             return(catalog)
         else:
             c = Messier33.Catalog.copy(catalog)
-            c._data = catalog._data[self.index]
+            c.data = catalog.data[self.index]
             return(c)
 
     def invert_index(self, n):

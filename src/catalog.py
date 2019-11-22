@@ -9,9 +9,6 @@ class Catalog(DataBase):
         self.units=units
         super(Catalog,self).__init__(data,indices=indices, history=history, name=name, bands=bands)
 
-        if(style=="pandas"): self.config=Messier33.pandas_config
-        elif(style=="wfcam"): self.config=Messier33.wfcam_config
-
     @classmethod
     def from_dict(cls, raw_dict):
         return(cls(  data=raw_dict["data"],
@@ -26,6 +23,13 @@ class Catalog(DataBase):
         if("config" in parent_dict): parent_dict.pop("config")
         print(parent_dict["bands"])
         return(parent_dict)
+
+    @property
+    def config(self):
+        if(self.style=="pandas"): return(Messier33.pandas_config)
+        elif(self.style=="wfcam"): return(Messier33.wfcam_config)
+        else: raise NotImplementedError("Catalog style %s not implemented"%self.style)
+
 
     @classmethod
     def from_pandas(cls, filename):
