@@ -34,7 +34,7 @@ class ParentMask(object):
             catalog.data = catalog.data[self.index]
             return(catalog)
         else:
-            c = Messier33.Catalog.copy(catalog)
+            c = Messier33.DataBase.copy(catalog)
             c.data = catalog.data[self.index]
             return(c)
 
