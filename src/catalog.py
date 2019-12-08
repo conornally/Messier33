@@ -42,12 +42,6 @@ class Catalog(DataBase):
         cls=cls.from_dict(Messier33.io.import_from_raw(filename, style="wfcam"))
         cls.name=filename.split('/')[-1]
         return cls
-
-    @classmethod
-    def from_serialised(cls, filename):
-        cls=cls.from_dict(Messier33.io.import_from_serialised(filename))
-        cls.name=filename.split('/')[-1]
-        return cls
     
     def convert_to_stdcoords(self, A=0, D=0):
         Messier33.info("*Converting RADEC to Standard Coordinates\n")

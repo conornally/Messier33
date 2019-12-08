@@ -7,8 +7,8 @@ class Isochrone(DataBase):
         super(Isochrone,self).__init__(data,indices=indices, bands=bands)
 
     @classmethod
-    def from_dartmouth(cls, filename):
-        raw_dict=Messier33.io.from_dartmouthISO(filename)
+    def from_dartmouth(cls, filename, colours="PanSTARRS"):
+        if(colours=="PanSTARRS"): raw_dict=Messier33.io.ISOfrom_Dartmouth_PanSTARRS(filename)
         return cls.from_dict(raw_dict)
 
     @classmethod
@@ -31,15 +31,24 @@ class Isochrone(DataBase):
         mask=Messier33.mask.Cut(key,value, inverse=inverse)
         self=mask.apply_on(self,True)
 
+    ##########
+    # BODGES #
+    ##########
+
+    def pseudo_dustcorrect(self):
+        """
+        FUNC:   isochrones come dust corrected, this adds an index with 'o' suffix to each band
+        """
+        for band in self.bands:
+            self.add_index("%so"%band, self.indices[band])
 
 if(__name__=="__main__"):
-    iso = Isochrone.from_dartmouth("tests/test.iso")
+    iso = Isochrone.from_dartmouth("tests/test.iso", "PanSTARRS")
     print(iso)
     print(iso.indices)
-    print(iso['g'][0], iso['g'][-1])
-    iso.apply_distance_modulus(10,807e3)
-    print(iso['g'][0], iso['g'][-1])
-    iso.lower_maglimit('g',26)
-    print(iso['g'][0], iso['g'][-1])
-    print(len(iso))
-    print(max(iso['g']),min(iso['g']))
+    iso.pseudo_dustcorrect()
+    print(iso.indices)
+    iso.export("%s/test-iso.pickle"%Messier33.OUT)
+    iso=Isochrone.from_serialised("%s/test-iso.pickle"%Messier33.OUT)
+    print(iso)
+    print(iso.indices)

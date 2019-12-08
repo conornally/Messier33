@@ -3,29 +3,17 @@
 !_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
-!_TAG_PROGRAM_VERSION	5.8	//
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 Bool	src/mask.py	/^class Bool(ParentMask):$/;"	c
 Box	src/mask.py	/^class Box(ParentMask):$/;"	c
-Catalog	__init__.py	/^from Messier33.src.catalog import Catalog$/;"	i
-Catalog	src/catalog.py	/^class Catalog(object):$/;"	c
+Catalog	src/catalog.py	/^class Catalog(DataBase):$/;"	c
 Cut	src/mask.py	/^class Cut(ParentMask):$/;"	c
 DATA	include/config.py	/^DATA=ROOT+"\/data"$/;"	v
+DataBase	src/database.py	/^class DataBase(object):$/;"	c
 HOME	include/config.py	/^HOME="\/home\/conor\/mphys\/m33\/code" # codebase location$/;"	v
-Isochrone	__init__.py	/^from Messier33.src.isochrones import Isochrone$/;"	i
-Isochrone	src/isochrones.py	/^class Isochrone(object):$/;"	c
-Loading	__init__.py	/^from Messier33.src.loading import Loading$/;"	i
-Loading	src/fileio.py	/^from Messier33.src.loading import Loading$/;"	i
+Isochrone	src/isochrones.py	/^class Isochrone(DataBase):$/;"	c
 Loading	src/loading.py	/^class Loading:$/;"	c
-Logging	__init__.py	/^from Messier33.src.log import Logging$/;"	i
 Logging	src/log.py	/^class Logging:$/;"	c
-Messier33	__init__.py	/^import Messier33.include.pandas_config as pandas_config$/;"	i
-Messier33	__init__.py	/^import Messier33.include.wfcam_config as wfcam_config$/;"	i
-Messier33	__init__.py	/^import Messier33.src.mask as mask$/;"	i
-Messier33	src/catalog.py	/^import Messier33$/;"	i
-Messier33	src/fileio.py	/^    import Messier33$/;"	i
-Messier33	src/isochrones.py	/^import Messier33$/;"	i
-Messier33	src/loading.py	/^import Messier33$/;"	i
-Messier33	src/mask.py	/^import Messier33$/;"	i
 OUT	include/config.py	/^OUT=ROOT+"\/out"$/;"	v
 PA	include/m33.py	/^PA = np.radians(-23) ## McConachie chapman etc 10 (Stellar halo and outer disc of m33$/;"	v
 ParentMask	src/mask.py	/^class ParentMask(object):$/;"	c
@@ -34,14 +22,12 @@ Preset	src/mask.py	/^class Preset(Polygon):$/;"	c
 ROOT	include/config.py	/^ROOT="\/home\/conor\/mphys\/m33"$/;"	v
 Rv3_1	include/pandas_config.py	/^Rv3_1={'g':3.303, 'i':1.698, "ref":"Schlafly-11"}$/;"	v
 Rv3_1	include/wfcam_config.py	/^Rv3_1={'J':0.709, 'H':0.449, 'K':0.302, "ref":"Schlafly-11"}$/;"	v
-SFDQuery	src/catalog.py	/^from dustmaps.sfd import SFDQuery$/;"	i
-SkyCoord	src/catalog.py	/^from astropy.coordinates import SkyCoord$/;"	i
 Slice	src/mask.py	/^class Slice(ParentMask):$/;"	c
 __add__	src/mask.py	/^    def __add__(self, mask):$/;"	m	class:ParentMask	file:
 __call__	src/loading.py	/^    def __call__(self, i):$/;"	m	class:Loading	file:
-__getitem__	src/catalog.py	/^    def __getitem__(self, key):$/;"	m	class:Catalog	file:
-__getitem__	src/isochrones.py	/^    def __getitem__(self, key):$/;"	m	class:Isochrone	file:
-__init__	src/catalog.py	/^    def __init__(self, data=[], size=(0,0), style="null", name="null", indices={}, units="deg", history=[]):$/;"	m	class:Catalog
+__getitem__	src/database.py	/^    def __getitem__(self, key):$/;"	m	class:DataBase	file:
+__init__	src/catalog.py	/^    def __init__(self, data, style="null", name="null", indices={}, units="deg", history=[], bands=[]):$/;"	m	class:Catalog
+__init__	src/database.py	/^    def __init__(self, data, indices={}, history=[], name="null", bands=[]):$/;"	m	class:DataBase
 __init__	src/isochrones.py	/^    def __init__(self, data, params={}, indices={}, bands=[]):$/;"	m	class:Isochrone
 __init__	src/loading.py	/^    def __init__(self, n_max, length=25, prefix="loading"):$/;"	m	class:Loading
 __init__	src/log.py	/^    def __init__(self, level=0):$/;"	m	class:Logging
@@ -52,11 +38,11 @@ __init__	src/mask.py	/^    def __init__(self, filename="%s\/include\/stype_masks
 __init__	src/mask.py	/^    def __init__(self, key, inverse=False):$/;"	m	class:ParentMask
 __init__	src/mask.py	/^    def __init__(self, threshold, key, inverse=False):$/;"	m	class:Cut
 __init__	src/mask.py	/^    def __init__(self, value, key, inverse=False):$/;"	m	class:Bool
-__len__	src/catalog.py	/^    def __len__(self):$/;"	m	class:Catalog	file:
-__repr__	src/isochrones.py	/^    def __repr__(self): return("[Fe\/H]=%.2f t=%.1f"%(self.params['feh'],self.params['age']))$/;"	m	class:Isochrone	file:
+__len__	src/database.py	/^    def __len__(self): return(self.data.shape[0])$/;"	m	class:DataBase	file:
+__repr__	src/database.py	/^    def __repr__(self): return("%s"%self.name)$/;"	m	class:DataBase	file:
+__repr__	src/isochrones.py	/^    def __repr__(self): return("[Fe\/H]=%.2f t=%.1fGyr"%(self.params['feh'],self.params['age']))$/;"	m	class:Isochrone	file:
 __repr__	src/log.py	/^    def __repr__(self):$/;"	m	class:Logging	file:
-__setitem__	src/catalog.py	/^    def __setitem__(self, key, item):$/;"	m	class:Catalog	file:
-__setitem__	src/isochrones.py	/^    def __setitem__(self, key, item):$/;"	m	class:Isochrone	file:
+__setitem__	src/database.py	/^    def __setitem__(self, key, item):$/;"	m	class:DataBase	file:
 _crop	src/mask.py	/^    def _crop(self, catalog):$/;"	m	class:Bool
 _crop	src/mask.py	/^    def _crop(self, catalog):$/;"	m	class:Box
 _crop	src/mask.py	/^    def _crop(self, catalog):$/;"	m	class:Cut
@@ -64,67 +50,59 @@ _crop	src/mask.py	/^    def _crop(self, catalog):$/;"	m	class:Polygon
 _crop	src/mask.py	/^    def _crop(self, catalog):$/;"	m	class:Slice
 _log	src/log.py	/^    def _log(self, message, level):$/;"	m	class:Logging
 a	include/m33.py	/^a = 7.50E-02 ##dont really get this number$/;"	v
-append	src/catalog.py	/^    def append(self, data, key="key"):$/;"	m	class:Catalog
-apply_distance_modulus	src/catalog.py	/^    def apply_distance_modulus(self, d1, d2=10):$/;"	m	class:Catalog
-apply_distance_modulus	src/isochrones.py	/^    def apply_distance_modulus(self, d1, d2=10): $/;"	m	class:Isochrone
+append	src/database.py	/^    def append(self, data, key="key"):$/;"	m	class:DataBase
+apply_distance_modulus	src/database.py	/^    def apply_distance_modulus(self, d1, d2=10):$/;"	m	class:DataBase
 apply_on	src/mask.py	/^    def apply_on(self, catalog, overwrite=False):$/;"	m	class:ParentMask
-astropy	src/catalog.py	/^import astropy.units as u$/;"	i
 b	include/m33.py	/^b = 7.50E-02$/;"	v
-bands	src/catalog.py	/^    def bands(self):$/;"	m	class:Catalog
-c	src/catalog.py	/^    c=Catalog.from_pandas(filename="%s\/test\/pandas.test"%Messier33.DATA)$/;"	v	class:Catalog
+c	src/catalog.py	/^    c=Catalog(data,indices)$/;"	v	class:Catalog
+c	tests/intialise.py	/^c=Messier33.Catalog.from_pandas("test.pandas")$/;"	v
+c2	src/catalog.py	/^    c2=c.copy(c)$/;"	v	class:Catalog
+c2	tests/intialise.py	/^c2=Messier33.Catalog.from_wfcam("test.wfcam")$/;"	v
+c3	tests/intialise.py	/^c3=Messier33.Catalog.from_serialised("pandas.pickle")$/;"	v
+config	src/catalog.py	/^    def config(self):$/;"	m	class:Catalog
 convert_to_stdcoords	src/catalog.py	/^    def convert_to_stdcoords(self, A=0, D=0):$/;"	m	class:Catalog
-copy	src/catalog.py	/^    def copy(cls, other):$/;"	m	class:Catalog
+copy	src/database.py	/^    def copy(cls, other):$/;"	m	class:DataBase
+data	src/catalog.py	/^    data=np.zeros((5,2))$/;"	v	class:Catalog
+db	src/database.py	/^    db=DataBase(np.zeros((5,2)), indices={'x':0,'y':1})$/;"	v	class:DataBase
+db2	src/database.py	/^    db2=DataBase.copy(db)$/;"	v	class:DataBase
 debug	__init__.py	/^def debug(msg): Logging(log_level).debug(msg)$/;"	f
 debug	src/log.py	/^    def debug(self, message):$/;"	m	class:Logging
 dec	include/m33.py	/^dec= np.radians(30.660222)$/;"	v
-delete	src/catalog.py	/^    def delete(self, key):$/;"	m	class:Catalog
+delete	src/database.py	/^    def delete(self, key):$/;"	m	class:DataBase
 deproject_radii	src/catalog.py	/^    def deproject_radii(self):$/;"	m	class:Catalog
 display	src/loading.py	/^    def display(self):$/;"	m	class:Loading
 distance_modulus	include/m33.py	/^def distance_modulus(d1,d2=10):$/;"	f
 dms_to_degrees	include/m33.py	/^def dms_to_degrees(d,m,s):$/;"	f
-dms_to_degrees	src/fileio.py	/^from Messier33 import hms_to_degrees, dms_to_degrees$/;"	i
 enum	src/fileio.py	/^def enum(lst):$/;"	f
-export	src/catalog.py	/^    def export(self, filename=''):$/;"	m	class:Catalog
-export_ascii	src/catalog.py	/^    def export_ascii(self, filename=''):$/;"	m	class:Catalog
+export	src/database.py	/^    def export(self, filename=''):$/;"	m	class:DataBase
+export_ascii	src/database.py	/^    def export_ascii(self, filename=''):$/;"	m	class:DataBase
 extinction_correct	src/catalog.py	/^    def extinction_correct(self, overwrite=False):$/;"	m	class:Catalog
 filelength	src/fileio.py	/^def filelength(filename):$/;"	f
 from_dartmouth	src/isochrones.py	/^    def from_dartmouth(cls, filename):$/;"	m	class:Isochrone
 from_dartmouthISO	src/fileio.py	/^def from_dartmouthISO(filename):$/;"	f
 from_dict	src/catalog.py	/^    def from_dict(cls, raw_dict):$/;"	m	class:Catalog
+from_dict	src/database.py	/^    def from_dict(cls, raw_dict):$/;"	m	class:DataBase
 from_dict	src/isochrones.py	/^    def from_dict(cls, raw_dict):$/;"	m	class:Isochrone
 from_pandas	src/catalog.py	/^    def from_pandas(cls, filename):$/;"	m	class:Catalog
 from_serialised	src/catalog.py	/^    def from_serialised(cls, filename):$/;"	m	class:Catalog
 from_wfcam	src/catalog.py	/^    def from_wfcam(cls, filename):$/;"	m	class:Catalog
 generate_index	src/mask.py	/^    def generate_index(self, catalog):$/;"	m	class:ParentMask
 hms_to_degrees	include/m33.py	/^def hms_to_degrees(h,m,s):$/;"	f
-hms_to_degrees	src/fileio.py	/^from Messier33 import hms_to_degrees, dms_to_degrees$/;"	i
 import_ISO	src/fileio.py	/^def import_ISO(filename, style="dartmouth"):$/;"	f
 import_from_raw	src/fileio.py	/^def import_from_raw(filename, style="pandas"):$/;"	f
 import_from_serialised	src/fileio.py	/^def import_from_serialised(filename):$/;"	f
 inclination	include/m33.py	/^inclination = np.radians(53) $/;"	v
-include	__init__.py	/^import Messier33.include.pandas_config as pandas_config$/;"	i
-include	__init__.py	/^import Messier33.include.wfcam_config as wfcam_config$/;"	i
+indices	src/catalog.py	/^    indices={'x':0,'y':0}$/;"	v	class:Catalog
 info	__init__.py	/^def info(msg):Logging(log_level).info(msg)$/;"	f
 info	src/log.py	/^    def info(self, message):$/;"	m	class:Logging
 invert_index	src/mask.py	/^    def invert_index(self, n):$/;"	m	class:ParentMask
-io	__init__.py	/^from Messier33.src import fileio as io$/;"	i
-iso	src/isochrones.py	/^    iso = Isochrone.from_dartmouth("\/home\/conor\/data\/m33\/isochrones\/notes\/data\/test.iso")$/;"	v
+iso	src/isochrones.py	/^    iso = Isochrone.from_dartmouth("tests\/test.iso")$/;"	v	class:Isochrone
 l	src/loading.py	/^    l=Loading(100, 30)$/;"	v
 l	src/log.py	/^    l = Logging(0)$/;"	v	class:Logging
 log_level	__init__.py	/^log_level=2$/;"	v
-mask	__init__.py	/^import Messier33.src.mask as mask$/;"	i
+lower_maglimit	src/isochrones.py	/^    def lower_maglimit(self, value, key, inverse=True):$/;"	m	class:Isochrone
 mask	src/mask.py	/^    mask = Preset()$/;"	v	class:Preset
-matplotlib	src/mask.py	/^import matplotlib.path as mpltpath$/;"	i
-mean	src/catalog.py	/^    def mean(self, key='g'):$/;"	m	class:Catalog
-mpltpath	src/mask.py	/^import matplotlib.path as mpltpath$/;"	i
 n_cols	src/fileio.py	/^n_cols = {"pandas_raw":18, "wfcam_raw":22, "pandas_reduced":8, "wfcam_reduced":11}$/;"	v
-np	include/m33.py	/^import numpy as np$/;"	i
-np	src/catalog.py	/^import numpy as np$/;"	i
-np	src/fileio.py	/^import numpy as np$/;"	i
-np	src/isochrones.py	/^import numpy as np$/;"	i
-np	src/mask.py	/^import numpy as np$/;"	i
-pandas_config	__init__.py	/^import Messier33.include.pandas_config as pandas_config$/;"	i
-pickle	src/fileio.py	/^import pickle$/;"	i
 plot	src/mask.py	/^    def plot(self, ax, **kwargs):$/;"	m	class:ParentMask
 plot	src/mask.py	/^    def plot(self, ax, axis=0, **kwargs):$/;"	m	class:Box
 plot	src/mask.py	/^    def plot(self, ax, axis=0, **kwargs):$/;"	m	class:Cut
@@ -133,22 +111,17 @@ plot	src/mask.py	/^    def plot(self, ax, axis=0, **kwargs):$/;"	m	class:Preset
 plot	src/mask.py	/^    def plot(self, ax, axis=0, **kwargs):$/;"	m	class:Slice
 projected_radii	src/catalog.py	/^    def projected_radii(self, ra, dec, unit="deg"):$/;"	m	class:Catalog
 ra	include/m33.py	/^ra = np.radians(23.462042)$/;"	v
-raw_dict	src/fileio.py	/^raw_dict = {"data":np.array,$/;"	v
 reduce_line_pandas	src/fileio.py	/^def reduce_line_pandas(line):$/;"	f
 reduce_line_wfcam	src/fileio.py	/^def reduce_line_wfcam(line):$/;"	f
 remove_nonstellar	src/catalog.py	/^    def remove_nonstellar(self):$/;"	m	class:Catalog
-replace	src/catalog.py	/^    def replace(self, data, key, rename_key=""):$/;"	m	class:Catalog
+replace	src/database.py	/^    def replace(self, data, key, rename_key=""):$/;"	m	class:DataBase
 serialise	src/fileio.py	/^def serialise(filename, catalog_dict={}):$/;"	f
 set_level	src/log.py	/^    def set_level(self, _level):$/;"	m	class:Logging
 split_pandas_line	src/fileio.py	/^def split_pandas_line(line, dtype=str):$/;"	f
 split_wfcam_line	src/fileio.py	/^def split_wfcam_line(line, dtype=str):$/;"	f
-src	__init__.py	/^import Messier33.src.mask as mask$/;"	i
-stdout	src/loading.py	/^from sys import stdout$/;"	i
-sys	src/log.py	/^import sys$/;"	i
-time	src/loading.py	/^    import time$/;"	i
+template_dict	src/fileio.py	/^template_dict = {"data":np.array,$/;"	v
 to_dict	src/catalog.py	/^    def to_dict(self):$/;"	m	class:Catalog
-u	src/catalog.py	/^import astropy.units as u$/;"	i
+to_dict	src/database.py	/^    def to_dict(self): return(self.__dict__)$/;"	m	class:DataBase
 warn	__init__.py	/^def warn(msg):Logging(log_level).warn(msg)$/;"	f
 warn	src/log.py	/^    def warn(self, message):$/;"	m	class:Logging
-wfcam_config	__init__.py	/^import Messier33.include.wfcam_config as wfcam_config$/;"	i
 x	src/fileio.py	/^    x=import_from_raw(Messier33.DATA+"\/initial\/pandas_m33_2009.unique", "pandas")$/;"	v

@@ -90,37 +90,32 @@ def import_from_raw(filename, style="pandas"):
 
 
 ##Isochrones importing
-def import_ISO(filename, style="dartmouth"):
-    if(style=="dartmouth"): raw_dict=from_dartmouthISO(filename)
-    else: raise NotImplementedError("no other isochrone catalog supported")
+def ISOfrom_Dartmouth_PanSTARRS(filename):
+    raw_dict=ISOfrom_DartmouthGeneric(filename)
+    for i,index in enumerate(raw_dict["indices"]): #horrendously formatted code haha
+        if(i>=6): raw_dict["indices"][index.strip("p1")]=raw_dict["indices"].pop(index)
+    raw_dict["bands"]=['g','r','i','z','y','w']
     return(raw_dict)
 
-def from_dartmouthISO(filename):
-    """INPUT:   filename of dartmouth isochrone file
-        RETURN: Isochrone obj
-    """
-    #Messier33.warn("from_dartmouthISO still in development\n")
+def ISOfrom_DartmouthGeneric(filename):
     params={"age":0,"feh":0,"afe":0}
-    bands=['u','g','r',"i_new","i_old"]
-    size=0
+    header=8
+    size=filelength(filename)
+    load=Loading(size, prefix=filename)
     with open(filename, 'r') as isofile:
-        ii=0
         for i,line in enumerate(isofile.readlines()):
-            if(line[0]=="#"):
-                if(i==3): 
-                    params["feh"]=float(line[40:45])
-                    params["afe"]=float(line[48:52])
-                elif(i==7):
-                    params["age"]=float(line[5:10])
-                    size=int(line[17:20])
-                    _data=np.zeros((size,10))
-                    load=Loading(size,prefix=filename)
-                elif(i==8): indices=enum(line[1:].split())
-            else:
-                _data[ii]=np.array(line.split()).astype(float)
-                load(ii)
-                ii+=1
-    return({"data":_data, "params":params, "indices":indices, "bands":bands})
+            load(i)
+            if(i==3): 
+                params["feh"]=float(line[40:45])
+                params["afe"]=float(line[48:52])
+            elif(i==7): params["age"]=float(line[5:10])
+            elif(i==8): 
+                indices=enum(line[1:].split())
+                data=np.zeros((size-header-1, len(indices)))
+            elif(i>header): data[i-header-1]=np.array(line.split(), dtype=float)
+    return({"data":data, "params":params, "indices":indices})
+
+
 
 ## general functions
 def filelength(filename):
@@ -145,6 +140,6 @@ def enum(lst):
 
 if __name__=="__main__":
     import Messier33
-    x=import_from_raw(Messier33.DATA+"/initial/pandas_m33_2009.unique", "pandas")
+    #x=import_ISO("tests/test.iso", "PanSTARRS")
     print(x)
     

@@ -34,6 +34,19 @@ class DataBase(object):
     def __len__(self): return(self.data.shape[0])
     def __repr__(self): return("%s"%self.name)
 
+    def add_index(self, key, value, overwrite=True):
+        """
+        INPUT:  key -  new index key 
+                value- new index value
+                overwrite - if True (default) will overwrite existing key
+        """
+        if(key in self.indices.keys() and not overwrite): raise KeyError("%s in indices already, set 'overwrite=True' to overwrite it")
+        Messier33.debug("Adding new index %s=%d"%(key,value))
+        self.indices[key]=int(value)
+        self.history.append("03-New index %s=%d"%(key,value))
+
+
+
     def append(self, data, key="key"):
         """
         INPUT:  list of values [1x(len(catalog))]
@@ -75,6 +88,12 @@ class DataBase(object):
         self.history.append("02-Deleted %s from dataset"%key)
 
     def to_dict(self): return(self.__dict__)
+
+    @classmethod
+    def from_serialised(cls, filename):
+        cls=cls.from_dict(Messier33.io.import_from_serialised(filename))
+        cls.name=filename.split('/')[-1]
+        return cls
 
     @classmethod
     def from_dict(cls, raw_dict):
