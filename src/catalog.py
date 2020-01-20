@@ -5,9 +5,9 @@ from dustmaps.sfd import SFDQuery
 
 class Catalog(DataBase):
     def __init__(self, data, style="null", name="null", indices={}, units="deg", history=[], bands=[]):
+        super(Catalog,self).__init__(data,indices=indices, history=history, name=name, bands=bands)
         self.style=style
         self.units=units
-        super(Catalog,self).__init__(data,indices=indices, history=history, name=name, bands=bands)
 
     @classmethod
     def from_dict(cls, raw_dict):
@@ -21,7 +21,6 @@ class Catalog(DataBase):
     def to_dict(self):
         parent_dict=super().to_dict()
         if("config" in parent_dict): parent_dict.pop("config")
-        print(parent_dict["bands"])
         return(parent_dict)
 
     @property
@@ -114,7 +113,6 @@ class Catalog(DataBase):
             mask = Messier33.mask.Bool([-1,-2], "%scls"%band)
             self = mask.apply_on(self, overwrite=True)
         self.history.append("Removed any non-stellar sources from catalog")
-
 
 if __name__=="__main__":
     Messier33.log_level=3

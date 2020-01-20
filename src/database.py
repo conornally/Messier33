@@ -41,7 +41,7 @@ class DataBase(object):
                 overwrite - if True (default) will overwrite existing key
         """
         if(key in self.indices.keys() and not overwrite): raise KeyError("%s in indices already, set 'overwrite=True' to overwrite it")
-        Messier33.debug("Adding new index %s=%d"%(key,value))
+        Messier33.debug("Adding new index %s=%d\n"%(key,value))
         self.indices[key]=int(value)
         self.history.append("03-New index %s=%d"%(key,value))
 
