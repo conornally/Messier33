@@ -137,12 +137,12 @@ class Catalog(DataBase):
         for i,lo in enumerate(bounds[:-1], 1):
             mask=(lo<self["dist"]) * (self["dist"]<bounds[i])
             self["shells"][mask]=i
-            self.shell_areas.append(np.pi*(bounds[i]**2.0 - lo**2.0))
+            self.shell_areas.append(np.pi*((bounds[i]**2.0)-(lo**2.0)))
+        self.history.append("Generated radial shells")
 
 if __name__=="__main__":
     Messier33.log_level=3
     cat=Catalog.from_serialised("/mnt/sd/data/m33/M33.pickle")
-    #print(cat.__dict__)
     cat.gen_shells(0.0,1.2,12)
     for i,area in enumerate(cat.shell_areas):
         if(not i): continue
