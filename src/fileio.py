@@ -57,9 +57,11 @@ def reduce_line_wfcam(line):
 def import_from_serialised(filename):
     load=Loading(100, prefix=filename)
     load(0)
+    catalog_dict={"data":None, "style":None, "indices":None, "units":None, "history":None, "bands":None, "shell_areas":None}
     with open(filename, "rb") as f:
-        catalog_dict=pickle.load(f)
+        catalog_dict.update(pickle.load(f))
         for i in range(1,load.n_max): load(i)
+
     return catalog_dict 
 
 def import_from_raw(filename, style="pandas"):

@@ -11,6 +11,8 @@ Cut	src/mask.py	/^class Cut(ParentMask):$/;"	c
 DATA	include/config.py	/^DATA=ROOT+"\/data"$/;"	v
 DataBase	src/database.py	/^class DataBase(object):$/;"	c
 HOME	include/config.py	/^HOME="\/home\/conor\/mphys\/m33\/code" # codebase location$/;"	v
+ISOfrom_DartmouthGeneric	src/fileio.py	/^def ISOfrom_DartmouthGeneric(filename):$/;"	f
+ISOfrom_Dartmouth_PanSTARRS	src/fileio.py	/^def ISOfrom_Dartmouth_PanSTARRS(filename):$/;"	f
 Isochrone	src/isochrones.py	/^class Isochrone(DataBase):$/;"	c
 Loading	src/loading.py	/^class Loading:$/;"	c
 Logging	src/log.py	/^class Logging:$/;"	c
@@ -50,6 +52,7 @@ _crop	src/mask.py	/^    def _crop(self, catalog):$/;"	m	class:Polygon
 _crop	src/mask.py	/^    def _crop(self, catalog):$/;"	m	class:Slice
 _log	src/log.py	/^    def _log(self, message, level):$/;"	m	class:Logging
 a	include/m33.py	/^a = 7.50E-02 ##dont really get this number$/;"	v
+add_index	src/database.py	/^    def add_index(self, key, value, overwrite=True):$/;"	m	class:DataBase
 append	src/database.py	/^    def append(self, data, key="key"):$/;"	m	class:DataBase
 apply_distance_modulus	src/database.py	/^    def apply_distance_modulus(self, d1, d2=10):$/;"	m	class:DataBase
 apply_on	src/mask.py	/^    def apply_on(self, catalog, overwrite=False):$/;"	m	class:ParentMask
@@ -59,6 +62,7 @@ c	tests/intialise.py	/^c=Messier33.Catalog.from_pandas("test.pandas")$/;"	v
 c2	src/catalog.py	/^    c2=c.copy(c)$/;"	v	class:Catalog
 c2	tests/intialise.py	/^c2=Messier33.Catalog.from_wfcam("test.wfcam")$/;"	v
 c3	tests/intialise.py	/^c3=Messier33.Catalog.from_serialised("pandas.pickle")$/;"	v
+cat	tests/metalog.py	/^cat=Messier33.Catalog.from_serialised("pandas.pickle")$/;"	v
 config	src/catalog.py	/^    def config(self):$/;"	m	class:Catalog
 convert_to_stdcoords	src/catalog.py	/^    def convert_to_stdcoords(self, A=0, D=0):$/;"	m	class:Catalog
 copy	src/database.py	/^    def copy(cls, other):$/;"	m	class:DataBase
@@ -78,30 +82,34 @@ export	src/database.py	/^    def export(self, filename=''):$/;"	m	class:DataBase
 export_ascii	src/database.py	/^    def export_ascii(self, filename=''):$/;"	m	class:DataBase
 extinction_correct	src/catalog.py	/^    def extinction_correct(self, overwrite=False):$/;"	m	class:Catalog
 filelength	src/fileio.py	/^def filelength(filename):$/;"	f
-from_dartmouth	src/isochrones.py	/^    def from_dartmouth(cls, filename):$/;"	m	class:Isochrone
-from_dartmouthISO	src/fileio.py	/^def from_dartmouthISO(filename):$/;"	f
+from_dartmouth	src/isochrones.py	/^    def from_dartmouth(cls, filename, colours="PanSTARRS"):$/;"	m	class:Isochrone
 from_dict	src/catalog.py	/^    def from_dict(cls, raw_dict):$/;"	m	class:Catalog
 from_dict	src/database.py	/^    def from_dict(cls, raw_dict):$/;"	m	class:DataBase
 from_dict	src/isochrones.py	/^    def from_dict(cls, raw_dict):$/;"	m	class:Isochrone
 from_pandas	src/catalog.py	/^    def from_pandas(cls, filename):$/;"	m	class:Catalog
-from_serialised	src/catalog.py	/^    def from_serialised(cls, filename):$/;"	m	class:Catalog
+from_serialised	src/database.py	/^    def from_serialised(cls, filename):$/;"	m	class:DataBase
 from_wfcam	src/catalog.py	/^    def from_wfcam(cls, filename):$/;"	m	class:Catalog
 generate_index	src/mask.py	/^    def generate_index(self, catalog):$/;"	m	class:ParentMask
 hms_to_degrees	include/m33.py	/^def hms_to_degrees(h,m,s):$/;"	f
-import_ISO	src/fileio.py	/^def import_ISO(filename, style="dartmouth"):$/;"	f
+i	tests/metalog.py	/^i=0$/;"	v
 import_from_raw	src/fileio.py	/^def import_from_raw(filename, style="pandas"):$/;"	f
 import_from_serialised	src/fileio.py	/^def import_from_serialised(filename):$/;"	f
 inclination	include/m33.py	/^inclination = np.radians(53) $/;"	v
+index	tests/metalog.py	/^    index=mask.index$/;"	v
+indexes	tests/metalog.py	/^indexes=[]$/;"	v
 indices	src/catalog.py	/^    indices={'x':0,'y':0}$/;"	v	class:Catalog
 info	__init__.py	/^def info(msg):Logging(log_level).info(msg)$/;"	f
 info	src/log.py	/^    def info(self, message):$/;"	m	class:Logging
 invert_index	src/mask.py	/^    def invert_index(self, n):$/;"	m	class:ParentMask
-iso	src/isochrones.py	/^    iso = Isochrone.from_dartmouth("tests\/test.iso")$/;"	v	class:Isochrone
+iso	src/isochrones.py	/^    iso = Isochrone.from_dartmouth("tests\/test.iso", "PanSTARRS")$/;"	v
+iso	src/isochrones.py	/^    iso=Isochrone.from_serialised("%s\/test-iso.pickle"%Messier33.OUT)$/;"	v
 l	src/loading.py	/^    l=Loading(100, 30)$/;"	v
 l	src/log.py	/^    l = Logging(0)$/;"	v	class:Logging
+l0	tests/metalog.py	/^l0=2.4$/;"	v
 log_level	__init__.py	/^log_level=2$/;"	v
 lower_maglimit	src/isochrones.py	/^    def lower_maglimit(self, value, key, inverse=True):$/;"	m	class:Isochrone
 mask	src/mask.py	/^    mask = Preset()$/;"	v	class:Preset
+mask	tests/metalog.py	/^    mask=Messier33.mask.Slice((l0,l0+0.1),"dist")$/;"	v
 n_cols	src/fileio.py	/^n_cols = {"pandas_raw":18, "wfcam_raw":22, "pandas_reduced":8, "wfcam_reduced":11}$/;"	v
 plot	src/mask.py	/^    def plot(self, ax, **kwargs):$/;"	m	class:ParentMask
 plot	src/mask.py	/^    def plot(self, ax, axis=0, **kwargs):$/;"	m	class:Box
@@ -110,6 +118,7 @@ plot	src/mask.py	/^    def plot(self, ax, axis=0, **kwargs):$/;"	m	class:Polygon
 plot	src/mask.py	/^    def plot(self, ax, axis=0, **kwargs):$/;"	m	class:Preset
 plot	src/mask.py	/^    def plot(self, ax, axis=0, **kwargs):$/;"	m	class:Slice
 projected_radii	src/catalog.py	/^    def projected_radii(self, ra, dec, unit="deg"):$/;"	m	class:Catalog
+pseudo_dustcorrect	src/isochrones.py	/^    def pseudo_dustcorrect(self):$/;"	m	class:Isochrone
 ra	include/m33.py	/^ra = np.radians(23.462042)$/;"	v
 reduce_line_pandas	src/fileio.py	/^def reduce_line_pandas(line):$/;"	f
 reduce_line_wfcam	src/fileio.py	/^def reduce_line_wfcam(line):$/;"	f
@@ -124,4 +133,3 @@ to_dict	src/catalog.py	/^    def to_dict(self):$/;"	m	class:Catalog
 to_dict	src/database.py	/^    def to_dict(self): return(self.__dict__)$/;"	m	class:DataBase
 warn	__init__.py	/^def warn(msg):Logging(log_level).warn(msg)$/;"	f
 warn	src/log.py	/^    def warn(self, message):$/;"	m	class:Logging
-x	src/fileio.py	/^    x=import_from_raw(Messier33.DATA+"\/initial\/pandas_m33_2009.unique", "pandas")$/;"	v

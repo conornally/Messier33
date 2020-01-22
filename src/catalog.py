@@ -3,11 +3,14 @@ from astropy.coordinates import SkyCoord
 import astropy.units as u
 from dustmaps.sfd import SFDQuery
 
+_cat_dict={"data":None, "style":None, "indices":None, "units":None, "history":None, "bands":None, "areas":None}
+
 class Catalog(DataBase):
-    def __init__(self, data, style="null", name="null", indices={}, units="deg", history=[], bands=[]):
+    def __init__(self, data, style="null", name="null", indices={}, units="deg", history=[], bands=[], shell_areas=[]):
         super(Catalog,self).__init__(data,indices=indices, history=history, name=name, bands=bands)
         self.style=style
         self.units=units
+        self.shell_areas=shell_areas
 
     @classmethod
     def from_dict(cls, raw_dict):
@@ -16,12 +19,14 @@ class Catalog(DataBase):
                     indices=raw_dict["indices"], 
                     units=raw_dict["units"],
                     history=raw_dict["history"],
-                    bands=raw_dict["bands"]))
+                    bands=raw_dict["bands"],
+                    shell_areas=raw_dict["shell_areas"]))
 
     def to_dict(self):
         parent_dict=super().to_dict()
         if("config" in parent_dict): parent_dict.pop("config")
-        return(parent_dict)
+        _cat_dict.update(parent_dict)
+        return(_cat_dict)
 
     @property
     def config(self):
@@ -114,9 +119,32 @@ class Catalog(DataBase):
             self = mask.apply_on(self, overwrite=True)
         self.history.append("Removed any non-stellar sources from catalog")
 
+    def gen_shells(self, low=0, high=None, n=10):
+        """
+        INPUT:  low=0       inner shell radius
+                high=None   outer shell radius, None if to catalog max
+                n=10        number of shells
+        FUNC:  creates new catalog column "shell" with index of shell number
+        """
+        Messier33.info("*Generating shell indices\n")
+        if("dist" not in self.indices.keys()): 
+            convert_to_stdcoords()
+            deproject_radii()
+        if(high==None): high=max(self["dist"])
+        bounds=np.linspace(low, high, n+1)
+        self.append(np.zeros(len(self)), "shells")
+        self.shell_areas=[0]
+        for i,lo in enumerate(bounds[:-1], 1):
+            mask=(lo<self["dist"]) * (self["dist"]<bounds[i])
+            self["shells"][mask]=i
+            self.shell_areas.append(np.pi*(bounds[i]**2.0 - lo**2.0))
+
 if __name__=="__main__":
     Messier33.log_level=3
-    data=np.zeros((5,2))
-    indices={'x':0,'y':0}
-    c=Catalog(data,indices)
-    c2=c.copy(c)
+    cat=Catalog.from_serialised("/mnt/sd/data/m33/M33.pickle")
+    #print(cat.__dict__)
+    cat.gen_shells(0.0,1.2,12)
+    for i,area in enumerate(cat.shell_areas):
+        if(not i): continue
+        mask=np.where(cat["shells"]==i)[0]
+        print(len(mask)/area)

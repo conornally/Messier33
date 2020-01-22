@@ -104,6 +104,8 @@ class DataBase(object):
     @classmethod
     def copy(cls, other):
         other_dict=other.to_dict()
+        print(type(cls))
+        print(other_dict["shell_areas"])
         cls = cls.from_dict(other_dict)
         return(cls)
 
