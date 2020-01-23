@@ -117,6 +117,8 @@ def ISOfrom_DartmouthGeneric(filename):
             elif(i>header): data[i-header-1]=np.array(line.split(), dtype=float)
     return({"data":data, "params":params, "indices":indices})
 
+def ISOfrom_PadovaPanSTARRS(filename): pass
+def ISOfrom_PadovaGeneric(filename): pass
 
 
 ## general functions

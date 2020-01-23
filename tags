@@ -28,7 +28,7 @@ Slice	src/mask.py	/^class Slice(ParentMask):$/;"	c
 __add__	src/mask.py	/^    def __add__(self, mask):$/;"	m	class:ParentMask	file:
 __call__	src/loading.py	/^    def __call__(self, i):$/;"	m	class:Loading	file:
 __getitem__	src/database.py	/^    def __getitem__(self, key):$/;"	m	class:DataBase	file:
-__init__	src/catalog.py	/^    def __init__(self, data, style="null", name="null", indices={}, units="deg", history=[], bands=[]):$/;"	m	class:Catalog
+__init__	src/catalog.py	/^    def __init__(self, data, style="null", name="null", indices={}, units="deg", history=[], bands=[], shell_areas=[]):$/;"	m	class:Catalog
 __init__	src/database.py	/^    def __init__(self, data, indices={}, history=[], name="null", bands=[]):$/;"	m	class:DataBase
 __init__	src/isochrones.py	/^    def __init__(self, data, params={}, indices={}, bands=[]):$/;"	m	class:Isochrone
 __init__	src/loading.py	/^    def __init__(self, n_max, length=25, prefix="loading"):$/;"	m	class:Loading
@@ -45,6 +45,7 @@ __repr__	src/database.py	/^    def __repr__(self): return("%s"%self.name)$/;"	m	
 __repr__	src/isochrones.py	/^    def __repr__(self): return("[Fe\/H]=%.2f t=%.1fGyr"%(self.params['feh'],self.params['age']))$/;"	m	class:Isochrone	file:
 __repr__	src/log.py	/^    def __repr__(self):$/;"	m	class:Logging	file:
 __setitem__	src/database.py	/^    def __setitem__(self, key, item):$/;"	m	class:DataBase	file:
+_cat_dict	src/catalog.py	/^_cat_dict={"data":None, "style":None, "indices":None, "units":None, "history":None, "bands":None, "areas":None}$/;"	v
 _crop	src/mask.py	/^    def _crop(self, catalog):$/;"	m	class:Bool
 _crop	src/mask.py	/^    def _crop(self, catalog):$/;"	m	class:Box
 _crop	src/mask.py	/^    def _crop(self, catalog):$/;"	m	class:Cut
@@ -57,16 +58,14 @@ append	src/database.py	/^    def append(self, data, key="key"):$/;"	m	class:Data
 apply_distance_modulus	src/database.py	/^    def apply_distance_modulus(self, d1, d2=10):$/;"	m	class:DataBase
 apply_on	src/mask.py	/^    def apply_on(self, catalog, overwrite=False):$/;"	m	class:ParentMask
 b	include/m33.py	/^b = 7.50E-02$/;"	v
-c	src/catalog.py	/^    c=Catalog(data,indices)$/;"	v	class:Catalog
 c	tests/intialise.py	/^c=Messier33.Catalog.from_pandas("test.pandas")$/;"	v
-c2	src/catalog.py	/^    c2=c.copy(c)$/;"	v	class:Catalog
 c2	tests/intialise.py	/^c2=Messier33.Catalog.from_wfcam("test.wfcam")$/;"	v
 c3	tests/intialise.py	/^c3=Messier33.Catalog.from_serialised("pandas.pickle")$/;"	v
+cat	src/catalog.py	/^    cat=Catalog.from_serialised("\/mnt\/sd\/data\/m33\/M33.pickle")$/;"	v	class:Catalog
 cat	tests/metalog.py	/^cat=Messier33.Catalog.from_serialised("pandas.pickle")$/;"	v
 config	src/catalog.py	/^    def config(self):$/;"	m	class:Catalog
 convert_to_stdcoords	src/catalog.py	/^    def convert_to_stdcoords(self, A=0, D=0):$/;"	m	class:Catalog
 copy	src/database.py	/^    def copy(cls, other):$/;"	m	class:DataBase
-data	src/catalog.py	/^    data=np.zeros((5,2))$/;"	v	class:Catalog
 db	src/database.py	/^    db=DataBase(np.zeros((5,2)), indices={'x':0,'y':1})$/;"	v	class:DataBase
 db2	src/database.py	/^    db2=DataBase.copy(db)$/;"	v	class:DataBase
 debug	__init__.py	/^def debug(msg): Logging(log_level).debug(msg)$/;"	f
@@ -89,6 +88,7 @@ from_dict	src/isochrones.py	/^    def from_dict(cls, raw_dict):$/;"	m	class:Isoc
 from_pandas	src/catalog.py	/^    def from_pandas(cls, filename):$/;"	m	class:Catalog
 from_serialised	src/database.py	/^    def from_serialised(cls, filename):$/;"	m	class:DataBase
 from_wfcam	src/catalog.py	/^    def from_wfcam(cls, filename):$/;"	m	class:Catalog
+gen_shells	src/catalog.py	/^    def gen_shells(self, low=0, high=None, n=10):$/;"	m	class:Catalog
 generate_index	src/mask.py	/^    def generate_index(self, catalog):$/;"	m	class:ParentMask
 hms_to_degrees	include/m33.py	/^def hms_to_degrees(h,m,s):$/;"	f
 i	tests/metalog.py	/^i=0$/;"	v
@@ -97,7 +97,6 @@ import_from_serialised	src/fileio.py	/^def import_from_serialised(filename):$/;"
 inclination	include/m33.py	/^inclination = np.radians(53) $/;"	v
 index	tests/metalog.py	/^    index=mask.index$/;"	v
 indexes	tests/metalog.py	/^indexes=[]$/;"	v
-indices	src/catalog.py	/^    indices={'x':0,'y':0}$/;"	v	class:Catalog
 info	__init__.py	/^def info(msg):Logging(log_level).info(msg)$/;"	f
 info	src/log.py	/^    def info(self, message):$/;"	m	class:Logging
 invert_index	src/mask.py	/^    def invert_index(self, n):$/;"	m	class:ParentMask
