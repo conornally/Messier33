@@ -79,7 +79,7 @@ class Catalog(DataBase):
         y0=np.degrees(Messier33.DEC)
         data= np.sqrt( (ra-self["ra"])**2.0 + (dec-self["dec"])**2.0 )
         if("dist" in self.indices.keys()): self["dist"]=data
-        else self.append(data, "dist")
+        else: self.append(data, "dist")
 
 
     def projected_radii(self, ra, dec, unit="deg"):
