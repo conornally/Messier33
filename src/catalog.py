@@ -82,7 +82,6 @@ class Catalog(DataBase):
         FUNC:   creates column "dist" with these values
         """
         print(self.units)
-        Messier33.info("*Calculating projected radii from (%f %f)\n"%(ra,dec))
         Messier33.warn("\x1b[31mThis funciton is overwriting column 'dist'\n\x1b[0m")
         if(unit not in ("deg","rads")): raise ValueError("unit must be 'deg' or 'rads', not '%s'"%unit)
         if((self.units=="rads") and (unit=="deg")):
@@ -91,6 +90,7 @@ class Catalog(DataBase):
         elif((self.units=="deg" or self.units=="stdcoord") and (unit=="rads")):
             ra=np.degrees(ra); dec=np.degrees(dec)
             Messier33.debug("**Converting input units to degrees\n")
+        Messier33.info("*Calculating projected radii from (%f %f)\n"%(ra,dec))
         data= np.sqrt( (ra-self["ra"])**2.0 + (dec-self["dec"])**2.0 )
         if("dist" not in self.indices): self.append(data, "dist")
         else: self["dist"]=data
