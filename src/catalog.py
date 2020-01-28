@@ -59,7 +59,6 @@ class Catalog(DataBase):
             #for now this overwrites the ra/dec column, can change this if needed
             xi = (np.cos(self['dec'])*np.sin(self['ra']-A))/( np.sin(D)*np.sin(self['dec'])+np.cos(D)*np.cos(self['dec'])*np.cos(self['ra']-A))
             eta= (np.cos(D)*np.sin(self['dec'])-np.sin(D)*np.cos(self['dec'])*np.cos(self['ra']-A))/(np.sin(D)*np.sin(self['dec'])+np.cos(D)*np.cos(self['dec'])*np.cos(self['ra']-A))
-            self.units="stdcoord"
             self.append(np.degrees(xi), "xi")
             self.append(np.degrees(eta), "eta")
         self.history.append("Converted RADEC to STDCoordinates")
@@ -87,7 +86,7 @@ class Catalog(DataBase):
         if((self.units=="rads") and (unit=="deg")):
             ra=np.radians(ra); dec=np.radians(dec)
             Messier33.debug("**Converting input units to radians\n")
-        elif((self.units=="deg" or self.units=="stdcoord") and (unit=="rads")):
+        elif((self.units=="deg") and (unit=="rads")):
             ra=np.degrees(ra); dec=np.degrees(dec)
             Messier33.debug("**Converting input units to degrees\n")
         Messier33.info("*Calculating projected radii from (%f %f)\n"%(ra,dec))
