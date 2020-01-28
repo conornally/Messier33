@@ -88,7 +88,7 @@ class Catalog(DataBase):
         """
         ra=np.degrees(Messier33.ra)
         dec=np.degrees(Messier33.dec)
-        dist=np.degrees(np.sqrt( (ra-self["ra"])**2 + (dec-self["dec"])**2 ))
+        dist=np.sqrt( (ra-self["ra"])**2 + (dec-self["dec"])**2 )
         if("dist" in self.indices.keys()): self["dist"]=dist
         else: self.append(dist, "dist")
         
