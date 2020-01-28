@@ -48,9 +48,9 @@ class Catalog(DataBase):
         return cls
     
     def convert_to_stdcoords(self, A=0, D=0):
-        Messier33.info("*Converting RADEC to Standard Coordinates\n")
         if(not A):A=Messier33.ra
         if(not D):D=Messier33.dec
+        Messier33.info("*Converting RADEC to Standard Coordinates around (%f,%f)\n"%(A,D))
         if(self.units=="deg"):
             self['ra'] = np.radians(self['ra'])
             self['dec'] = np.radians(self['dec'])
@@ -89,7 +89,7 @@ class Catalog(DataBase):
             ra=np.radians(ra); dec=np.radians(dec)
             Messier33.debug("**Converting input units to radians\n")
         elif((self.units=="deg" or self.units=="stdcoord") and (unit=="rads")):
-            ra=np.degrees(ra); dec=n.degrees(dec)
+            ra=np.degrees(ra); dec=np.degrees(dec)
             Messier33.debug("**Converting input units to degrees\n")
         data= np.sqrt( (ra-self["ra"])**2.0 + (dec-self["dec"])**2.0 )
         if("dist" not in self.indices): self.append(data, "dist")
