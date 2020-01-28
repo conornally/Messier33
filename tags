@@ -13,6 +13,8 @@ DataBase	src/database.py	/^class DataBase(object):$/;"	c
 HOME	include/config.py	/^HOME="\/home\/conor\/mphys\/m33\/code" # codebase location$/;"	v
 ISOfrom_DartmouthGeneric	src/fileio.py	/^def ISOfrom_DartmouthGeneric(filename):$/;"	f
 ISOfrom_Dartmouth_PanSTARRS	src/fileio.py	/^def ISOfrom_Dartmouth_PanSTARRS(filename):$/;"	f
+ISOfrom_PadovaGeneric	src/fileio.py	/^def ISOfrom_PadovaGeneric(filename): pass$/;"	f
+ISOfrom_PadovaPanSTARRS	src/fileio.py	/^def ISOfrom_PadovaPanSTARRS(filename): pass$/;"	f
 Isochrone	src/isochrones.py	/^class Isochrone(DataBase):$/;"	c
 Loading	src/loading.py	/^class Loading:$/;"	c
 Logging	src/log.py	/^class Logging:$/;"	c
