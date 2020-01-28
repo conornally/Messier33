@@ -80,24 +80,17 @@ class Catalog(DataBase):
         else: self.append(dist, "dist")
 
 
-    def projected_radii(self, ra, dec, unit="deg"):
+    def projected_radii(self):
         """
-        INPUT:  ra,dec of origin
-                unit = unit of ra and dec (deg,rads)
-        FUNC:   creates column "dist" with these values
+        This is a cartesian measurement from at point in RADEC
         """
-        Messier33.warn("\x1b[31mThis funciton is overwriting column 'dist'\n\x1b[0m")
-        if(unit not in ("deg","rads")): raise ValueError("unit must be 'deg' or 'rads', not '%s'"%unit)
-        if((self.units=="rads") and (unit=="deg")):
-            ra=np.radians(ra); dec=np.radians(dec)
-            Messier33.debug("**Converting input units to radians\n")
-        elif((self.units=="deg") and (unit=="rads")):
-            ra=np.degrees(ra); dec=np.degrees(dec)
-            Messier33.debug("**Converting input units to degrees\n")
-        Messier33.info("*Calculating projected radii from (%f %f)\n"%(ra,dec))
-        data= np.sqrt( (ra-self["ra"])**2.0 + (dec-self["dec"])**2.0 )
-        if("dist" not in self.indices): self.append(data, "dist")
-        else: self["dist"]=data
+        ra=np.degrees(Messier33.ra)
+        dec=np.degrees(Messier33.dec)
+        dist=np.sqrt( (ra-self["ra"])**2 + (dec-self["dec"])**2 )
+        if("dist" in self.indices.keys()): self["dist"]=dist
+        else: self.append(dist, "dist")
+        
+
 
 
     def extinction_correct(self, overwrite=False):
