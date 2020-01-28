@@ -75,8 +75,8 @@ class Catalog(DataBase):
         return(self['dist'])
 
     def cartesian_radii(self):
-        x0=np.degrees(Messier33.RA)
-        y0=np.degrees(Messier33.DEC)
+        x0=np.degrees(Messier33.ra)
+        y0=np.degrees(Messier33.dec)
         data= np.sqrt( (ra-self["ra"])**2.0 + (dec-self["dec"])**2.0 )
         if("dist" in self.indices.keys()): self["dist"]=data
         else: self.append(data, "dist")
