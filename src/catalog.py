@@ -74,13 +74,20 @@ class Catalog(DataBase):
         self.history.append("Deprojected Radii from galactic centre")
         return(self['dist'])
 
+    def cartesian_radii(self):
+        x0=Messier33.RA
+        y0=Messier33.DEC
+        data= np.sqrt( (ra-self["ra"])**2.0 + (dec-self["dec"])**2.0 )
+        if("dist" in self.indices.keys()): self["dist"]=data
+        else self.append(data, "dist")
+
+
     def projected_radii(self, ra, dec, unit="deg"):
         """
         INPUT:  ra,dec of origin
                 unit = unit of ra and dec (deg,rads)
         FUNC:   creates column "dist" with these values
         """
-        print(self.units)
         Messier33.warn("\x1b[31mThis funciton is overwriting column 'dist'\n\x1b[0m")
         if(unit not in ("deg","rads")): raise ValueError("unit must be 'deg' or 'rads', not '%s'"%unit)
         if((self.units=="rads") and (unit=="deg")):
