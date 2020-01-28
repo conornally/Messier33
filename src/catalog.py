@@ -61,6 +61,8 @@ class Catalog(DataBase):
             eta= (np.cos(D)*np.sin(self['dec'])-np.sin(D)*np.cos(self['dec'])*np.cos(self['ra']-A))/(np.sin(D)*np.sin(self['dec'])+np.cos(D)*np.cos(self['dec'])*np.cos(self['ra']-A))
             self.append(np.degrees(xi), "xi")
             self.append(np.degrees(eta), "eta")
+        self["ra"]=np.degrees(self["ra"])
+        self["dec"]=np.degrees(self["dec"])
         self.history.append("Converted RADEC to STDCoordinates")
 
     def deproject_radii(self):
