@@ -117,8 +117,29 @@ def ISOfrom_DartmouthGeneric(filename):
             elif(i>header): data[i-header-1]=np.array(line.split(), dtype=float)
     return({"data":data, "params":params, "indices":indices})
 
-def ISOfrom_PadovaPanSTARRS(filename): pass
-def ISOfrom_PadovaGeneric(filename): pass
+def ISOfrom_PadovaPanSTARRS(filename):
+    raw_dict=ISOfrom_PadovaGeneric(filename)
+    changes={}
+    for i,index in enumerate(raw_dict["indices"]):
+        if("P1mag"in index): changes[index[0]]=raw_dict["indices"][index]
+    raw_dict["indices"].update(changes)
+    raw_dict["bands"]=['g','r','i','z','y','w']
+    return(raw_dict)
+
+def ISOfrom_PadovaGeneric(filename):
+    params={"age":0,"feh":0,"afe":0}
+    header=11
+    size=filelength(filename)
+    load=Loading(size, prefix=filename)
+    with open(filename, 'r') as isofile:
+        for i,line in enumerate(isofile.readlines()):
+            load(i)
+            if(i==header): 
+                indices=enum(line[1:].split())
+                data=np.zeros((size-header-2, len(indices)))
+            elif(i>header and line[0]!='#'): data[i-header-1]=np.array(line.split(), dtype=float)
+    return({"data":data, "params":params, "indices":indices})
+
 
 
 ## general functions
@@ -144,6 +165,6 @@ def enum(lst):
 
 if __name__=="__main__":
     import Messier33
-    #x=import_ISO("tests/test.iso", "PanSTARRS")
+    x=ISOfrom_PadovaPanSTARRS("/home/conor/Downloads/output402857142341.dat")
     print(x)
     

@@ -12,6 +12,11 @@ class Isochrone(DataBase):
         return cls.from_dict(raw_dict)
 
     @classmethod
+    def from_padova(cls, filename, colours="PanSTARRS"):
+        if(colours=="PanSTARRS"): raw_dict=Messier33.io.ISOfrom_PadovaPanSTARRS(filename)
+        return cls.from_dict(raw_dict)
+
+    @classmethod
     def from_dict(cls, raw_dict):
         return(cls(raw_dict["data"],
                     params=raw_dict["params"],
@@ -43,7 +48,7 @@ class Isochrone(DataBase):
             self.add_index("%so"%band, self.indices[band])
 
 if(__name__=="__main__"):
-    iso = Isochrone.from_dartmouth("tests/test.iso", "PanSTARRS")
+    iso = Isochrone.from_padova("/home/conor/Downloads/output402857142341.dat", "PanSTARRS")
     print(iso)
     print(iso.indices)
     iso.pseudo_dustcorrect()
