@@ -137,7 +137,7 @@ class Catalog(DataBase):
         for i,lo in enumerate(bounds[:-1], 1):
             mask=(lo<self["dist"]) * (self["dist"]<bounds[i])
             self["shells"][mask]=i
-            self.shell_areas.append(np.pi*((bounds[i]**2.0)-(lo**2.0)))
+            self.shell_areas.append(np.pi*np.cos(Messier33.inclination)*((bounds[i]**2.0)-(lo**2.0))) 
         self.history.append("Generated radial shells")
 
 if __name__=="__main__":
