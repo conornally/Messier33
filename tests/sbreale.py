@@ -4,8 +4,9 @@ from photutils import isophote
 from photutils.isophote import Ellipse
 from photutils import EllipticalAperture
 from Messier33 import inclination
+import Messier33
 
-with fits.open("/home/conor/data/m33/ellipse/m33_i_mosaic.fits") as d:
+with fits.open("/home/s1539878/data/mphys/ellipse/m33_i_mosaic.fits") as d:
     head=d[0].header
     data=d[0].data
 
