@@ -29,7 +29,6 @@ def getIsoList(data, config):
 
 if(__name__=="__main__"):
     config=load_config("/mnt/sd/data/m33/ellipse/conf")
-    print(config)
     data=fits.open("/mnt/sd/data/m33/ellipse/m33_i_mosaic.fits")[0].data
     print(getIsoList(data,config).sma)
 

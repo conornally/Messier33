@@ -21,7 +21,6 @@ e=np.cos(inclination)
 print(e,PA)
 geometry = isophote.EllipseGeometry(x2, y2, sma, e, PA)
 print(geometry.__dict__)
-quit()
 #aper=EllipticalAperture((x2,y2),sma, sma*(1-e), PA) 
 
 """
