@@ -15,8 +15,8 @@ x0=head["CRPIX1"]
 y0=head["CRPIX2"]
 
 #x1,y1 = np.unravel_index(np.argmax(data), data.shape)
-x2,y2=(3000,2600)
-PA=np.radians(135)
+x2,y2=(3013,2651)
+PA=np.radians(112)
 sma=500
 e=np.cos(inclination)
 print(e,PA)
@@ -33,8 +33,8 @@ plt.show()
 """
 ellipse = Ellipse(data, geometry, threshold=0.01)
 #print(ellipse.fit_isophote(400))
-isolist=ellipse.fit_image(400,0,2000)
-print(isolist)
+isolist=ellipse.fit_image(300,50,2500, fix_pa=True)
+print(isolist.sma)
 isolist.to_table().to_pandas().to_csv("tmp")
 
 
