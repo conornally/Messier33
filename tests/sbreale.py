@@ -5,7 +5,7 @@ from photutils.isophote import Ellipse
 from photutils import EllipticalAperture
 from Messier33 import inclination
 
-with fits.open("/home/s1539878/data/mphys/ellipse/m33_i_mosaic.fits") as d:
+with fits.open("/home/conor/data/m33/ellipse/m33_i_mosaic.fits") as d:
     head=d[0].header
     data=d[0].data
 
@@ -18,9 +18,10 @@ x2,y2=(3000,2600)
 PA=np.radians(135)
 sma=500
 e=np.cos(inclination)
-print(e)
+print(e,PA)
 geometry = isophote.EllipseGeometry(x2, y2, sma, e, PA)
 print(geometry.__dict__)
+quit()
 #aper=EllipticalAperture((x2,y2),sma, sma*(1-e), PA) 
 
 """
