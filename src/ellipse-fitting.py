@@ -28,8 +28,8 @@ def getIsoList(data, config):
     return(ellipse.fit_image(config['sma'], config['sm0'], config['sm1']))
 
 if(__name__=="__main__"):
-    config=load_config("/mnt/sd/data/m33/ellipse/conf")
-    data=fits.open("/mnt/sd/data/m33/ellipse/m33_i_mosaic.fits")[0].data
+    config=load_config("/home/s1539878/data/mphys/ellipse/conf")
+    data=fits.open("/home/s1539878/data/mphys/ellipse/m33_i_mosaic.fits")[0].data
     print(getIsoList(data,config).sma)
 
 
