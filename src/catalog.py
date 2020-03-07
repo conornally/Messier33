@@ -131,14 +131,16 @@ class Catalog(DataBase):
             convert_to_stdcoords()
             deproject_radii()
         if(high==None): high=max(self["dist"])
-        bounds=np.linspace(low, high, n+1)
+        #bounds=np.linspace(low, high, n+1)
+        bounds=np.geomspace(low+(high/2/n), high, n+1)
         self.append(np.zeros(len(self)), "shells")
         self.shell_areas=[0]
         for i,lo in enumerate(bounds[:-1], 1):
-            mask=(lo<self["dist"]) * (self["dist"]<bounds[i])
+            mask=(lo<=self["dist"]) * (self["dist"]<bounds[i])
             self["shells"][mask]=i
             self.shell_areas.append(np.pi*np.cos(Messier33.inclination)*((bounds[i]**2.0)-(lo**2.0))) 
         self.history.append("Generated radial shells")
+        return bounds
 
 if __name__=="__main__":
     Messier33.log_level=3
