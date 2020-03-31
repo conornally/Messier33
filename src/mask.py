@@ -141,18 +141,24 @@ class Preset(Polygon):
     def __init__(self, filename="%s/include/stype_masks/test.mask"%Messier33.HOME, inverse=False):
         with open(filename, 'r') as raw:
             line = raw.readline().strip("\n").split(';')
+            try: self.annotation=raw.readline().split(';')
+            except: self.annotation=['null',0,0]
         self.name=line[0]
         keys=line[1:3]
         points=  line[3:]
         arr_points = np.array(points, dtype=float).reshape((int(len(points)/2),2))
         super(Preset,self).__init__(arr_points, keys, inverse)
 
-    def plot(self, ax, axis=0, **kwargs):
+    def plot(self, ax, axis=0, annotate=False, **kwargs):
         label=self.name 
         if("label" in kwargs): 
             label=kwargs["label"]
             kwargs.pop("label")
-        super().plot(ax,axis=axis, label=label, lw=1, **kwargs)
+        super().plot(ax,axis=axis, label=label, lw=1.2, **kwargs)
+        if(annotate):
+            c= 'b' if('c' not in kwargs) else kwargs['c']
+            ax.text(float(self.annotation[1]), float(self.annotation[2]), self.annotation[0], c=c, bbox=dict(boxstyle="square", fc="white"))
+
 
 
 if(__name__=="__main__"):

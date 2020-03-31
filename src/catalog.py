@@ -133,7 +133,8 @@ class Catalog(DataBase):
         if(high==None): high=max(self["dist"])
         #bounds=np.linspace(low, high, n+1)
         bounds=np.geomspace(low+(high/2/n), high, n+1)
-        self.append(np.zeros(len(self)), "shells")
+        if("shells" not in self.indices):
+            self.append(np.zeros(len(self)), "shells")
         self.shell_areas=[0]
         for i,lo in enumerate(bounds[:-1], 1):
             mask=(lo<=self["dist"]) * (self["dist"]<bounds[i])

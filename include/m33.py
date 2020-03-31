@@ -4,6 +4,7 @@ ra = np.radians(23.462042)
 dec= np.radians(30.660222)
 PA = np.radians(-23) ## McConachie chapman etc 10 (Stellar halo and outer disc of m33
 inclination = np.radians(53) 
+inclination = np.radians(56) 
 distance=809e+3
 a = 7.50E-02 ##dont really get this number
 b = 7.50E-02
@@ -18,11 +19,11 @@ def distance_modulus(d1,d2=10):
     return 5.0*np.log10(d1/d2)
 
 def getName(catalog):
-    names={ "full.pickle":"Full Catalog",
+    names={ "full.pickle":"Full Catalogue",
             "rgb23.5.pickle":"RGB Shallow Cut",
             "rgb24.pickle":"RGB Deep Cut",
             "rsg.pickle":"RSG",
-            "yms.pickle":"Young MS",
+            "yms.pickle":"Young MS + BHeB",
             "agb.pickle":"AGB"}
     if(catalog.name in names.keys()): return names[catalog.name]
     else: return catalog.name.strip(".pickle")
